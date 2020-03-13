@@ -1,0 +1,37 @@
+@font-face {
+    font-family: 'Roboto';
+    src: local('Roboto'), local('Roboto-Regular'),
+        url('Roboto.woff2') format('woff2'),
+        url('Roboto.woff') format('woff'),
+        url('Roboto.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+header
+{
+    height: 96px;
+    border-bottom: 1px solid #959393;
+    font-family: 'Roboto', Futura, Arial, Helvetica, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 48px;
+}
+
+.telltail
+{
+    color: #F49EC4;
+}
+
+div.middle-name
+{
+    height: 96px;
+    padding-top: 33px;
+}
+
+img.logo-icon
+{
+    position: absolute;
+    left: 54px;
+    top: 20px;
+}

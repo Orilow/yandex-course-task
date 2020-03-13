@@ -1,0 +1,69 @@
+{
+  "name": "orilow-first-web-app",
+  "private": true,
+  "engines": {
+    "node": "13"
+  },
+  "scripts": {
+    "clean": "rimraf dist node_modules",
+    "build": "npm-run-all --parallel build:*",
+    "build:ts": "tsc",
+    "build:hbs": "copyfiles --up 1 \"./src/views/**/*\" \"./src/public/*\" dist/",
+    "lint": "npm-run-all lint:*",
+    "lint:css": "stylelint src/**/*.css",
+    "lint:deps": "npm audit",
+    "lint:es": "eslint --ext=.ts src/",
+    "lint:ts": "tsc --noEmit",
+    "deps:all": "npm ci",
+    "deps:production": "npm ci --production",
+    "dev": "tsc-watch --preserveWatchOutput --pretty --onSuccess \"npm-run-all build:hbs start\"",
+    "rundev": "npm run build && npm run dev",
+    "docker:build": "docker build -t $npm_package_name .",
+    "docker:run": "docker run -p 8080:80 $npm_package_name",
+    "heroku:login": "heroku container:login",
+    "heroku:push": "heroku container:push web",
+    "heroku:release": "heroku container:release web",
+    "heroku:open": "heroku open",
+    "heroku:logs": "heroku logs --tail",
+    "heroku": "npm-run-all heroku:*",
+    "heroku-init": "heroku login && heroku create $npm_package_name",
+    "start": "cross-env NODE_PATH=dist/ node dist/",
+    "surge": "surge -p ./dist/public -d $npm_package_name.surge.sh",
+    "deploy": "npm-run-all build surge heroku"
+  },
+  "dependencies": {
+    "body-parser": "1.19.0",
+    "config": "3.3.0",
+    "cross-env": "7.0.0",
+    "express": "4.17.1",
+    "hbs": "4.1.0",
+    "morgan": "1.9.1",
+    "tslib": "^1.11.1"
+  },
+  "devDependencies": {
+    "@types/config": "0.0.36",
+    "@types/express": "4.17.2",
+    "@types/hbs": "4.0.1",
+    "@types/morgan": "1.9.0",
+    "@types/node": "13.7.7",
+    "@typescript-eslint/eslint-plugin": "2.21.0",
+    "@typescript-eslint/parser": "2.21.0",
+    "copyfiles": "2.2.0",
+    "eslint": "^6.8.0",
+    "husky": "4.2.3",
+    "npm-run-all": "4.1.5",
+    "rimraf": "3.0.2",
+    "stylelint": "^13.2.0",
+    "stylelint-config-standard": "20.0.0",
+    "surge": "0.21.3",
+    "tsc-watch": "4.2.3",
+    "typescript": "3.8.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": [
+        "npm run lint"
+      ]
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "alwaysStrict": true,
+
+    "rootDir": "src/",
+    "outDir": "dist/",
+
+    "baseUrl": "src/",
+
+    "target": "es2019",
+    "lib": ["es2019"],
+    "module": "commonjs",
+    "resolveJsonModule": true,
+    "sourceMap": true,
+
+    "esModuleInterop": true,
+    "importHelpers": true,
+
+    "strict": true,
+
+    "noImplicitAny": true,
+//    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strictNullChecks": true
+  },
+  "typeRoots": [
+    "src/@types/",
+    "./node_modules/@types"
+  ]
+}

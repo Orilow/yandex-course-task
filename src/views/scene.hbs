@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="{{ meta.charset }}">
+    <title>{{ title }}</title>
+    <meta name="description" content="{{ meta.description }}" />
+    <link rel="icon" href="{{staticBasePath}}favicon.png" type="image/png">
+    <link rel="stylesheet" href="{{ staticBasePath }}index.css" media="screen">
+    <link rel="stylesheet" href="{{staticBasePath}}scene.css" media="screen">
+</head>
+<body>
+{{>header}}
+    <article class="scene-container">
+        <section class="scene-img-container">
+            <img src="{{staticBasePath}}{{scene.pictureLink}}" alt="Scene img">
+            {{#eq scene.descriptionPosition 1}}
+                <p class="scene-description scene-description-1">{{{scene.description}}}</p>
+            {{/eq}}
+            {{#eq scene.descriptionPosition 2}}
+                <p class="scene-description scene-description-2">{{{scene.description}}}</p>
+            {{/eq}}
+            {{#eq scene.descriptionPosition 3}}
+                <p class="scene-description scene-description-3">{{{scene.description}}}</p>
+            {{/eq}}
+            {{#eq scene.descriptionPosition 4}}
+                <p class="scene-description scene-description-4">{{{scene.description}}}</p>
+            {{/eq}}
+        </section>
+        {{#if scene.achievements.length}}
+        <section class="achievements-box">
+            {{#each scene.achievements}}
+                <section class="achievement-box">
+                    <section class="achievement-img">
+                        <img src="{{../staticBasePath}}{{pictureLink}}" alt="Achievement img">
+                    </section>
+                    <section class="achievement-info">
+                        <span>Достижение получено</span>
+                        <span class="achievement-name">{{name}}</span>
+                    </section>
+                </section>
+            {{/each}}
+        </section>
+        {{/if}}
+        <section class="actions-container">
+        {{#each scene.actions}}
+            <a class="action-button" href="{{../staticBasePath}}scene?id={{nextSceneId}}">{{name}}</a>
+        {{/each}}
+        {{#if scene.startSceneId}}
+            <a class="action-button" href="{{staticBasePath}}scene?id={{scene.startSceneId}}">Начать заново</a>
+        {{/if}}
+        </section>
+    </article>
+</body>

@@ -1,12 +1,47 @@
 @import 'header.css';
+@import 'adventures.css';
+
+@font-face {
+    font-family: 'Gabriela';
+    src: local('Gabriela'), local('Gabriela-Regular'),
+    url('gabriela.woff2') format('woff2'),
+    url('gabriela.woff') format('woff'),
+    url('gabriela.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
 
 body
 {
-    font: 16px/1.2em Arial, sans-serif;
+    font-family:  'Gabriela', sans-serif;
     margin: 0;
 }
 
 div.shift
 {
     margin-left: 99px;
+}
+
+.main-container {
+    margin-left: 99px;
+    width: 756px;
+}
+
+a
+{
+    text-decoration: none;
+    color: inherit;
+}
+
+.hashtag-button
+{
+    font-size: 18px;
+    text-decoration: none;
+    color: #FFF;
+    border-radius: 4px;
+    background-color: #B3B3B3;
+    font-family: 'Roboto', sans-serif;
+    padding: 10px 18px;
+    margin-right: 25px;
 }

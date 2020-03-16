@@ -6,10 +6,12 @@
     <meta name="description" content="{{ meta.description }}" />
     <link rel="icon" href="{{staticBasePath}}favicon.png" type="image/png">
     <link rel="stylesheet" href="{{ staticBasePath }}index.css" media="screen">
+    <link rel="stylesheet" href="{{ staticBasePath }}byHashtag.css" media="screen">
 </head>
 <body>
-    {{>header}}
-    <div class="main-container">
-        {{>adventures}}
-    </div>
+{{>header}}
+<div class="main-container">
+    <div class="searching-hashtag">{{targetHashtag}}</div>
+    {{>adventures}}
+</div>
 </body>

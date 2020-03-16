@@ -1,0 +1,38 @@
+.adventure-box{
+    height: 200px;
+    display: grid;
+    grid-template-columns: 200px auto;
+    column-gap: 34px;
+}
+
+.adventure-boxes {
+    padding: 0;
+    margin-top: 25px;
+}
+
+.adventure-img-box{
+    width: 200px;
+    height: 150px;
+    padding-top: 13%;
+}
+
+.adventure-info{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.adventure-name {
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+
+.adventure-description{
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.adventure-hashtags
+{
+    padding-top: 10px;
+}

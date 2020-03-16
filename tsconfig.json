@@ -17,9 +17,9 @@
     "importHelpers": true,
 
     "strict": true,
-
-    "noImplicitAny": true,
-//    "noUnusedLocals": true,
+    "experimentalDecorators": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strictNullChecks": true
   },

@@ -1,9 +1,6 @@
 @font-face {
     font-family: 'Roboto';
-    src: local('Roboto'), local('Roboto-Regular'),
-        url('Roboto.woff2') format('woff2'),
-        url('Roboto.woff') format('woff'),
-        url('Roboto.ttf') format('truetype');
+    src: local('Roboto'), local('Roboto-Regular'), url('Roboto.woff2') format('woff2'), url('Roboto.woff') format('woff'), url('Roboto.ttf') format('truetype');
     font-weight: 400;
     font-style: normal;
 }
@@ -26,6 +23,7 @@ header
 div.middle-name
 {
     height: 96px;
+    line-height: 38px;
     padding-top: 33px;
 }
 
@@ -33,5 +31,5 @@ img.logo-icon
 {
     position: absolute;
     left: 54px;
-    top: 20px;
+    top: 27px;
 }

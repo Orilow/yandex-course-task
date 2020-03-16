@@ -24,7 +24,6 @@ export async function adventuresList(req: Request, res: Response): Promise<void>
             }
         ]
     });
-    console.info(adventures);
     const data: AdventuresPageData = {
         meta,
         title,
@@ -52,8 +51,6 @@ export async function adventuresListByHashtag(req: Request, res: Response): Prom
             }
         ]
     });
-
-    console.log();
 
     const data: HashtagPageData = {
         meta,

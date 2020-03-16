@@ -5,18 +5,17 @@ import express, { Request, Response} from 'express';
 import hbs from 'hbs';
 import helpers from 'handlebars-helpers';
 import morgan from 'morgan';
-import {Sequelize, SequelizeOptions} from 'sequelize-typescript';
 import queryParser from 'express-query-parser';
+import {Sequelize, SequelizeOptions} from 'sequelize-typescript';
 
-
-import commonData from 'middlewares/common-data';
-import routes from 'routes';
-import {Adventure} from "./models/adventure";
-import {Scene} from "./models/scene";
-import {Action} from "./models/action";
 import {Achievement} from "./models/achievement";
-import {Hashtag} from "./models/hashtag";
+import {Action} from "./models/action";
+import {Adventure} from "./models/adventure";
 import {AdventureHashtag} from "./models/adventureHashtag";
+import commonData from 'middlewares/common-data';
+import {Hashtag} from "./models/hashtag";
+import routes from 'routes';
+import {Scene} from "./models/scene";
 
 
 const app = express();

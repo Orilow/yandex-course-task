@@ -1,6 +1,6 @@
 import {Application} from 'express';
-import {error404} from 'controllers/errors';
 import {adventuresList, adventuresListByHashtag} from 'controllers/adventures';
+import {error404} from 'controllers/errors';
 import {scene} from 'controllers/scenes';
 
 export default (app: Application): void => {

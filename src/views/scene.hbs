@@ -5,8 +5,8 @@
     <title>{{ title }}</title>
     <meta name="description" content="{{ meta.description }}" />
     <link rel="icon" href="{{staticBasePath}}favicon.png" type="image/png">
-    <link rel="stylesheet" href="{{ staticBasePath }}index.css" media="screen">
-    <link rel="stylesheet" href="{{staticBasePath}}scene.css" media="screen">
+    <link rel="stylesheet" href="{{ staticBasePath }}index.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="{{staticBasePath}}scene.css" type="text/css" media="screen">
 </head>
 <body>
 {{>header}}
@@ -43,10 +43,10 @@
         {{/if}}
         <section class="actions-container">
         {{#each scene.actions}}
-            <a class="action-button" href="{{../staticBasePath}}scene?id={{nextSceneId}}">{{name}}</a>
+            <a class="action-button" href="/scene?id={{nextSceneId}}">{{name}}</a>
         {{/each}}
         {{#if scene.startSceneId}}
-            <a class="action-button" href="{{staticBasePath}}scene?id={{scene.startSceneId}}">Начать заново</a>
+            <a class="action-button" href="/scene?id={{scene.startSceneId}}">Начать заново</a>
         {{/if}}
         </section>
     </article>

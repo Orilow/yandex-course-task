@@ -4,7 +4,7 @@
     <li class="adventure-box">
         <div class="adventure-img-box">
             {{#if firstSceneId}}
-            <a href="{{../staticBasePath}}scene?id={{firstSceneId}}">
+            <a href="/scene?id={{firstSceneId}}">
             <img class="adventure-img" src="{{../staticBasePath}}{{pictureLink}}" alt="Adventure Image">
             </a>
             {{^}}
@@ -14,7 +14,7 @@
         <section class="adventure-info">
             <section class="adventure-name">
                 {{#if firstSceneId}}
-                <a href="{{../staticBasePath}}scene?id={{firstSceneId}}">{{name}}</a>
+                <a href="/scene?id={{firstSceneId}}">{{name}}</a>
                 {{^}}
                     {{name}}
                 {{/if}}
@@ -22,7 +22,7 @@
             <section class="adventure-description">{{description}}</section>
             <section class="adventure-hashtags">
                 {{#each hashtags}}
-                    <a class="hashtag-button" href="{{../../staticBasePath}}hashtag?name={{name}}">
+                    <a class="hashtag-button" href="/hashtag?name={{name}}">
                         {{ruName}}
                     </a>
                 {{/each}}

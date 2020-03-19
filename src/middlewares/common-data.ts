@@ -7,6 +7,9 @@ export default (req: Request, _res: Response, next: Next): void => {
         meta: {
             charset: 'utf-8',
             description: 'First task',
+            keywords: 'telltail, games, quest, adventure',
+            viewport: 'width=device-width, initial-scale=1.0',
+            contentLanguage: 'ru-ru',
         },
         title: 'First task',
         staticBasePath: config.get('staticBasePath'),

@@ -17,12 +17,28 @@
     margin: 0;
 }
 
+.black-text
+{
+    color: #000;
+}
+
 .scene-img-container
 {
     position: relative;
     width: 950px;
     height: 380px;
     margin: 0;
+    object-fit: cover;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.scene-img
+{
+    width: 100%;
 }
 
 .scene-description-1

@@ -12,34 +12,40 @@
 {{>header}}
     <article class="scene-container">
         <section class="scene-img-container">
-            <img src="{{staticBasePath}}{{scene.pictureLink}}" alt="Scene img">
-            {{#eq scene.descriptionPosition 1}}
-                <p class="scene-description scene-description-1">{{{scene.description}}}</p>
-            {{/eq}}
-            {{#eq scene.descriptionPosition 2}}
-                <p class="scene-description scene-description-2">{{{scene.description}}}</p>
-            {{/eq}}
-            {{#eq scene.descriptionPosition 3}}
-                <p class="scene-description scene-description-3">{{{scene.description}}}</p>
-            {{/eq}}
-            {{#eq scene.descriptionPosition 4}}
-                <p class="scene-description scene-description-4">{{{scene.description}}}</p>
-            {{/eq}}
+            {{#if scene.pictureLink}}
+                <img class="scene-img" src="{{staticBasePath}}{{scene.pictureLink}}" alt="Scene img">
+                {{#eq scene.descriptionPosition 1}}
+                    <p class="scene-description scene-description-1">{{{scene.description}}}</p>
+                {{/eq}}
+                {{#eq scene.descriptionPosition 2}}
+                    <p class="scene-description scene-description-2">{{{scene.description}}}</p>
+                {{/eq}}
+                {{#eq scene.descriptionPosition 3}}
+                    <p class="scene-description scene-description-3">{{{scene.description}}}</p>
+                {{/eq}}
+                {{#eq scene.descriptionPosition 4}}
+                    <p class="scene-description scene-description-4">{{{scene.description}}}</p>
+                {{/eq}}
+            {{^}}
+                {{#if scene.description}}
+                    <p class="scene-description scene-description-1 black-text">{{{scene.description}}}</p>
+                {{/if}}
+            {{/if}}
         </section>
         {{#if scene.achievements.length}}
-        <section class="achievements-box">
-            {{#each scene.achievements}}
-                <section class="achievement-box">
-                    <section class="achievement-img">
-                        <img src="{{../staticBasePath}}{{pictureLink}}" alt="Achievement img">
+            <section class="achievements-box">
+                {{#each scene.achievements}}
+                    <section class="achievement-box">
+                        <section class="achievement-img">
+                            <img src="{{../staticBasePath}}{{pictureLink}}" alt="Achievement img">
+                        </section>
+                        <section class="achievement-info">
+                            <span>Достижение получено</span>
+                            <span class="achievement-name">{{name}}</span>
+                        </section>
                     </section>
-                    <section class="achievement-info">
-                        <span>Достижение получено</span>
-                        <span class="achievement-name">{{name}}</span>
-                    </section>
-                </section>
-            {{/each}}
-        </section>
+                {{/each}}
+            </section>
         {{/if}}
         <section class="actions-container">
         {{#each scene.actions}}

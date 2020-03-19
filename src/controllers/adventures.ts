@@ -26,7 +26,7 @@ export async function adventuresList(req: Request, res: Response): Promise<void>
 
     const filtered = adventures.filter(adventure => adventure.firstSceneId != null);
 
-    for (let adventure of filtered) {
+    for (const adventure of filtered) {
         if (!adventure.pictureLink || adventure.pictureLink === '') {
             adventure.pictureLink = 'adventure_empty.jpg';
         }

@@ -55,11 +55,11 @@ app.use(
 );
 
 const sequelizeOptions: SequelizeOptions = {
-    host: config.get('dbHost'),
-    port: config.get('dbPort'),
-    username: config.get('dbUsername'),
-    password: config.get('dbPassword'),
-    database: config.get('dbDatabase'),
+    host: config.get('DB.host'),
+    port: config.get('DB.port'),
+    username: config.get('DB.username'),
+    password: config.get('DB.password'),
+    database: config.get('DB.database'),
     dialect: 'postgres',
 };
 

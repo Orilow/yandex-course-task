@@ -35,6 +35,9 @@ export async function adventuresList(req: Request, res: Response): Promise<void>
 
 export async function adventuresListByHashtag(req: Request, res: Response): Promise<void> {
     const { meta, staticBasePath, title } = req.locals;
+    if (!req.query.name) {
+        return adventuresList(req, res);
+    }
     const taggedAdventures = await Hashtag.findAll({
         where: {
             name: req.query.name,
@@ -50,6 +53,10 @@ export async function adventuresListByHashtag(req: Request, res: Response): Prom
             },
         ],
     });
+
+    if (taggedAdventures.length === 0) {
+        return adventuresList(req, res);
+    }
 
     const data: HashtagPageData = {
         meta,

@@ -6,16 +6,16 @@ import {
     DataType,
     ForeignKey,
     Model,
-    PrimaryKey, Table
-} from "sequelize-typescript";
-import {Scene} from "./scene";
-
+    PrimaryKey,
+    Table,
+} from 'sequelize-typescript';
+import { Scene } from './scene';
 
 @Table({
     timestamps: false,
-    tableName: 'action'
+    tableName: 'action',
 })
-export class Action extends Model<Action>{
+export class Action extends Model<Action> {
     @AutoIncrement
     @PrimaryKey
     @Column(DataType.INTEGER)
@@ -26,7 +26,7 @@ export class Action extends Model<Action>{
     @AllowNull(false)
     @Column({
         type: DataType.STRING(255),
-        field: 'name'
+        field: 'name',
     })
     get name(): string {
         return this.getDataValue('name');
@@ -36,7 +36,7 @@ export class Action extends Model<Action>{
     @AllowNull(false)
     @Column({
         type: DataType.INTEGER,
-        field: 'scene_id'
+        field: 'scene_id',
     })
     get sceneId(): number {
         return this.getDataValue('sceneId');
@@ -44,7 +44,7 @@ export class Action extends Model<Action>{
 
     @BelongsTo(() => Scene, {
         as: 'currentScene',
-        foreignKey: 'scene_id'
+        foreignKey: 'scene_id',
     })
     get currentScene(): Scene {
         return this.getDataValue('currentScene');
@@ -54,7 +54,7 @@ export class Action extends Model<Action>{
     @AllowNull(false)
     @Column({
         type: DataType.INTEGER,
-        field: 'refer_to_scene_id'
+        field: 'refer_to_scene_id',
     })
     get nextSceneId(): number {
         return this.getDataValue('nextSceneId');
@@ -62,7 +62,7 @@ export class Action extends Model<Action>{
 
     @BelongsTo(() => Scene, {
         as: 'nextScene',
-        foreignKey: 'refer_to_scene_id'
+        foreignKey: 'refer_to_scene_id',
     })
     get nextScene(): Scene {
         return this.getDataValue('nextScene');

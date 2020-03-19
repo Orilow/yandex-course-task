@@ -6,17 +6,16 @@ import {
     DataType,
     ForeignKey,
     Model,
-    PrimaryKey, Table
-} from "sequelize-typescript";
-import {Scene} from "./scene";
-
+    PrimaryKey,
+    Table,
+} from 'sequelize-typescript';
+import { Scene } from './scene';
 
 @Table({
-    timestamps:false,
-    tableName: 'achievement'
+    timestamps: false,
+    tableName: 'achievement',
 })
-export class Achievement extends Model<Achievement>{
-
+export class Achievement extends Model<Achievement> {
     @AutoIncrement
     @PrimaryKey
     @Column(DataType.INTEGER)
@@ -34,7 +33,7 @@ export class Achievement extends Model<Achievement>{
     @AllowNull(false)
     @Column({
         type: DataType.INTEGER,
-        field: 'scene_id'
+        field: 'scene_id',
     })
     get sceneId(): number {
         return this.getDataValue('sceneId');
@@ -43,12 +42,12 @@ export class Achievement extends Model<Achievement>{
     @AllowNull(false)
     @Column({
         type: DataType.TEXT,
-        field: 'picture_link'
+        field: 'picture_link',
     })
     get pictureLink(): string {
         return this.getDataValue('pictureLink');
     }
 
     @BelongsTo(() => Scene)
-    scene?: Scene
+    scene?: Scene;
 }

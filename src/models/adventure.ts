@@ -7,18 +7,17 @@ import {
     ForeignKey,
     Model,
     PrimaryKey,
-    Table
-} from "sequelize-typescript";
-import {Scene} from './scene';
-import {Hashtag} from "./hashtag";
-import {AdventureHashtag} from "./adventureHashtag";
+    Table,
+} from 'sequelize-typescript';
+import { Scene } from './scene';
+import { Hashtag } from './hashtag';
+import { AdventureHashtag } from './adventureHashtag';
 
 @Table({
     timestamps: false,
-    tableName: 'adventure'
+    tableName: 'adventure',
 })
-export class Adventure extends Model<Adventure>{
-
+export class Adventure extends Model<Adventure> {
     @AutoIncrement
     @PrimaryKey
     @Column(DataType.INTEGER)
@@ -28,14 +27,14 @@ export class Adventure extends Model<Adventure>{
 
     @AllowNull(false)
     @Column(DataType.STRING(255))
-    get name(): string{
+    get name(): string {
         return this.getDataValue('name');
     }
 
     @ForeignKey(() => Scene)
     @Column({
         type: DataType.INTEGER,
-        field: 'first_scene_id'
+        field: 'first_scene_id',
     })
     firstSceneId?: number;
 
@@ -43,11 +42,14 @@ export class Adventure extends Model<Adventure>{
     description?: string;
 
     @Column({
-        type:DataType.TEXT,
-        field: 'picture_link'
+        type: DataType.TEXT,
+        field: 'picture_link',
     })
     pictureLink?: string;
 
-    @BelongsToMany(() => Hashtag, ()=> AdventureHashtag)
-    hashtags?: Hashtag[]
+    @BelongsToMany(
+        () => Hashtag,
+        () => AdventureHashtag,
+    )
+    hashtags?: Hashtag[];
 }

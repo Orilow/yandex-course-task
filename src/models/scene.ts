@@ -1,29 +1,28 @@
-import {AutoIncrement, Column, DataType, HasMany, Model, PrimaryKey, Table} from "sequelize-typescript";
-import {Action} from "./action";
-import {Achievement} from './achievement';
+import { AutoIncrement, Column, DataType, HasMany, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { Action } from './action';
+import { Achievement } from './achievement';
 
 @Table({
     timestamps: false,
-    tableName: 'scene'
+    tableName: 'scene',
 })
-export class Scene extends Model<Scene>{
-
+export class Scene extends Model<Scene> {
     @AutoIncrement
     @PrimaryKey
     @Column(DataType.INTEGER)
-    get id(): number{
+    get id(): number {
         return this.getDataValue('id');
     }
 
     @Column({
         type: DataType.TEXT,
-        field: 'picture_link'
+        field: 'picture_link',
     })
     pictureLink?: string;
 
     @Column({
         type: DataType.TEXT,
-        field: 'description'
+        field: 'description',
     })
     get description(): string {
         const value = this.getDataValue('description');
@@ -32,13 +31,13 @@ export class Scene extends Model<Scene>{
 
     @Column({
         type: DataType.STRING(255),
-        field: 'description_position'
+        field: 'description_position',
     })
     descriptionPosition?: string;
 
     @Column({
         type: DataType.INTEGER,
-        field: 'start_scene_id'
+        field: 'start_scene_id',
     })
     startSceneId?: number;
 
@@ -46,5 +45,5 @@ export class Scene extends Model<Scene>{
     actions?: Action[];
 
     @HasMany(() => Achievement)
-    achievements?: Achievement[]
+    achievements?: Achievement[];
 }

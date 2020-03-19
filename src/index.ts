@@ -1,22 +1,21 @@
 import path from 'path';
 
 import config from 'config';
-import express, { Request, Response} from 'express';
+import express, { Request, Response } from 'express';
 import hbs from 'hbs';
 import helpers from 'handlebars-helpers';
 import morgan from 'morgan';
 import queryParser from 'express-query-parser';
-import {Sequelize, SequelizeOptions} from 'sequelize-typescript';
+import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
 
-import {Achievement} from "./models/achievement";
-import {Action} from "./models/action";
-import {Adventure} from "./models/adventure";
-import {AdventureHashtag} from "./models/adventureHashtag";
+import { Achievement } from './models/achievement';
+import { Action } from './models/action';
+import { Adventure } from './models/adventure';
+import { AdventureHashtag } from './models/adventureHashtag';
 import commonData from 'middlewares/common-data';
-import {Hashtag} from "./models/hashtag";
+import { Hashtag } from './models/hashtag';
 import routes from 'routes';
-import {Scene} from "./models/scene";
-
+import { Scene } from './models/scene';
 
 const app = express();
 
@@ -48,26 +47,29 @@ app.use((err: Error, _req: Request, res: Response) => {
     res.sendStatus(500);
 });
 
-app.use(queryParser({
-    parseNull: true,
-    parseBoolean: true
-}));
+app.use(
+    queryParser({
+        parseNull: true,
+        parseBoolean: true,
+    }),
+);
 
-const sequelizeOptions: SequelizeOptions ={
+const sequelizeOptions: SequelizeOptions = {
     host: config.get('dbHost'),
     port: config.get('dbPort'),
     username: config.get('dbUsername'),
     password: config.get('dbPassword'),
     database: config.get('dbDatabase'),
-    dialect: 'postgres'
+    dialect: 'postgres',
 };
 
 const sequelize = new Sequelize(sequelizeOptions);
 sequelize.addModels([Adventure, Scene, Action, Achievement, Hashtag, AdventureHashtag]);
 
-sequelize.authenticate().then(() => {
-    console.info('Connection with Database has been established successfully.');
-    hbs.registerPartials(partialsDir, () => {
+sequelize.authenticate().then(
+    () => {
+        console.info('Connection with Database has been established successfully.');
+        hbs.registerPartials(partialsDir, () => {
             const port = config.get('port');
             app.listen(port, () => {
                 console.info(`Server started on ${port}`);
@@ -75,4 +77,5 @@ sequelize.authenticate().then(() => {
             });
         });
     },
-    error => console.error('Unable to connect to the database:', error));
+    error => console.error('Unable to connect to the database:', error),
+);

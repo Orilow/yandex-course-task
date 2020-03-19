@@ -23,11 +23,20 @@ export async function adventuresList(req: Request, res: Response): Promise<void>
             },
         ],
     });
+
+    const filtered = adventures.filter(adventure => adventure.firstSceneId != null);
+
+    for (let adventure of filtered) {
+        if (!adventure.pictureLink || adventure.pictureLink === '') {
+            adventure.pictureLink = 'adventure_empty.jpg';
+        }
+    }
+
     const data: AdventuresPageData = {
         meta,
         title,
         staticBasePath,
-        adventures,
+        adventures: filtered,
     };
 
     res.render('index', data);

@@ -12,4 +12,4 @@ export type MyRequest = Request & {
         title?: string;
         staticBasePath?: string;
     };
-}
+};

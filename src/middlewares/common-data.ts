@@ -1,5 +1,5 @@
 import config from 'config';
-import { NextFunction as Next,  Response } from 'express';
+import { NextFunction as Next, Response } from 'express';
 import { MyRequest } from '../extensions';
 
 export default (req: MyRequest, _res: Response, next: Next): void => {

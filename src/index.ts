@@ -1,7 +1,7 @@
 import path from 'path';
 
 import config from 'config';
-import express, { Request, Response } from 'express';
+import express, { Response } from 'express';
 import hbs from 'hbs';
 import helpers from 'handlebars-helpers';
 import morgan from 'morgan';
@@ -14,6 +14,7 @@ import { Adventure } from './models/adventure';
 import { AdventureHashtag } from './models/adventureHashtag';
 import commonData from 'middlewares/common-data';
 import { Hashtag } from './models/hashtag';
+import { MyRequest } from './extensions';
 import routes from 'routes';
 import { Scene } from './models/scene';
 
@@ -41,7 +42,7 @@ app.use(commonData);
 
 routes(app);
 
-app.use((err: Error, _req: Request, res: Response) => {
+app.use((err: Error, _req: MyRequest, res: Response) => {
     console.error(err.stack);
 
     res.sendStatus(500);

@@ -3,7 +3,7 @@ import { Achievement } from '../models/achievement';
 import { Response } from 'express';
 import { Scene } from '../models/scene';
 import { adventuresList } from './adventures';
-import { MyRequest } from '../extensions';
+import { ExtendedRequest } from '../extensions';
 
 export interface PageData {
     meta?: {
@@ -19,7 +19,8 @@ interface ScenePageData extends PageData {
     scene: Scene;
 }
 
-export async function scene(req: MyRequest, res: Response): Promise<void> {
+export async function scene(req: ExtendedRequest, res: Response): Promise<void> {
+    const {meta, title, staticBasePath} = req.locals || {};
     const id = Number(req.query.id);
     if (!id) {
         return adventuresList(req, res);
@@ -40,9 +41,9 @@ export async function scene(req: MyRequest, res: Response): Promise<void> {
         return adventuresList(req, res);
     }
     const data: ScenePageData = {
-        meta: req.locals?.meta,
-        title: req.locals?.title,
-        staticBasePath: req.locals?.staticBasePath,
+        meta,
+        title,
+        staticBasePath,
         scene,
     };
 

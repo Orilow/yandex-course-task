@@ -1,8 +1,8 @@
 import config from 'config';
 import { NextFunction as Next, Response } from 'express';
-import { MyRequest } from '../extensions';
+import { ExtendedRequest } from '../extensions';
 
-export default (req: MyRequest, _res: Response, next: Next): void => {
+export default (req: ExtendedRequest, _res: Response, next: Next): void => {
     // Хранение в req.locals – рекомендованный способ
     req.locals = {
         meta: {

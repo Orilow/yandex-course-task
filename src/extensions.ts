@@ -1,6 +1,6 @@
 import { Request } from 'express';
 
-export type MyRequest = Request & {
+export type ExtendedRequest = Request & {
     locals?: {
         meta?: {
             charset: string;

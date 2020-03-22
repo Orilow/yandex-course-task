@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { Adventure } from 'models/adventure';
 import { Hashtag } from '../models/hashtag';
 import { PageData } from './scenes';
-import { MyRequest } from '../extensions';
+import { ExtendedRequest } from '../extensions';
 
 interface AdventuresPageData extends PageData {
     adventures?: Adventure[];
@@ -13,7 +13,8 @@ interface HashtagPageData extends AdventuresPageData {
     targetHashtag: string;
 }
 
-export async function adventuresList(req: MyRequest, res: Response): Promise<void> {
+export async function adventuresList(req: ExtendedRequest, res: Response): Promise<void> {
+    const {meta, title, staticBasePath} = req.locals || {};
     const adventures = await Adventure.findAll({
         include: [
             {
@@ -32,16 +33,17 @@ export async function adventuresList(req: MyRequest, res: Response): Promise<voi
     }
 
     const data: AdventuresPageData = {
-        meta: req.locals?.meta,
-        title: req.locals?.title,
-        staticBasePath: req.locals?.staticBasePath,
+        meta,
+        title,
+        staticBasePath,
         adventures: filtered,
     };
 
     res.render('index', data);
 }
 
-export async function adventuresListByHashtag(req: MyRequest, res: Response): Promise<void> {
+export async function adventuresListByHashtag(req: ExtendedRequest, res: Response): Promise<void> {
+    const {meta, title, staticBasePath} = req.locals || {};
     if (!req.query.name) {
         return adventuresList(req, res);
     }
@@ -66,9 +68,9 @@ export async function adventuresListByHashtag(req: MyRequest, res: Response): Pr
     }
 
     const data: HashtagPageData = {
-        meta: req.locals?.meta,
-        title: req.locals?.title,
-        staticBasePath: req.locals?.staticBasePath,
+        meta,
+        title,
+        staticBasePath,
         targetHashtag: taggedAdventures[0].ruName,
         adventures: taggedAdventures[0].adventures,
     };

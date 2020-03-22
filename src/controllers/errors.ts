@@ -1,6 +1,6 @@
 import { Response } from 'express';
-import { MyRequest } from '../extensions';
+import { ExtendedRequest } from '../extensions';
 
-export const error404 = (_req: MyRequest, res: Response): void => {
+export const error404 = (_req: ExtendedRequest, res: Response): void => {
     res.sendStatus(404);
 };

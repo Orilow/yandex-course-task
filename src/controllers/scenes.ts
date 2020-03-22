@@ -20,7 +20,7 @@ interface ScenePageData extends PageData {
 }
 
 export async function scene(req: ExtendedRequest, res: Response): Promise<void> {
-    const {meta, title, staticBasePath} = req.locals || {};
+    const { meta, title, staticBasePath } = req.locals || {};
     const id = Number(req.query.id);
     if (!id) {
         return adventuresList(req, res);

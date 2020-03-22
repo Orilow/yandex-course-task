@@ -14,7 +14,7 @@ interface HashtagPageData extends AdventuresPageData {
 }
 
 export async function adventuresList(req: ExtendedRequest, res: Response): Promise<void> {
-    const {meta, title, staticBasePath} = req.locals || {};
+    const { meta, title, staticBasePath } = req.locals || {};
     const adventures = await Adventure.findAll({
         include: [
             {
@@ -43,7 +43,7 @@ export async function adventuresList(req: ExtendedRequest, res: Response): Promi
 }
 
 export async function adventuresListByHashtag(req: ExtendedRequest, res: Response): Promise<void> {
-    const {meta, title, staticBasePath} = req.locals || {};
+    const { meta, title, staticBasePath } = req.locals || {};
     if (!req.query.name) {
         return adventuresList(req, res);
     }

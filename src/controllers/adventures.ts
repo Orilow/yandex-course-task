@@ -4,6 +4,7 @@ import { Adventure } from 'models/adventure';
 import { Hashtag } from '../models/hashtag';
 import { PageData } from './scenes';
 import { ExtendedRequest } from '../extensions';
+import { error404 } from './errors';
 
 interface AdventuresPageData extends PageData {
     adventures?: Adventure[];
@@ -64,7 +65,7 @@ export async function adventuresListByHashtag(req: ExtendedRequest, res: Respons
     });
 
     if (taggedAdventures.length === 0) {
-        return adventuresList(req, res);
+        return error404(req, res);
     }
 
     const data: HashtagPageData = {

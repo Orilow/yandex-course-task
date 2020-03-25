@@ -1,0 +1,36 @@
+{{#if adventures.length}}
+<ul class="adventure-boxes">
+    {{#each adventures}}
+    <li class="adventure-box">
+        <div class="adventure-img-box">
+            {{#if firstSceneId}}
+            <a href="/scene?id={{firstSceneId}}">
+            <img class="adventure-img" src="{{../staticBasePath}}{{pictureLink}}" alt="Adventure Image">
+            </a>
+            {{^}}
+            <img class="adventure-img" src="{{../staticBasePath}}{{pictureLink}}" alt="Adventure Image">
+            {{/if}}
+        </div>
+        <section class="adventure-info">
+            <section class="adventure-name">
+                {{#if firstSceneId}}
+                <a href="/scene?id={{firstSceneId}}">{{name}}</a>
+                {{^}}
+                    {{name}}
+                {{/if}}
+            </section>
+            <section class="adventure-description">{{description}}</section>
+            <section class="adventure-hashtags">
+                {{#each hashtags}}
+                    <a class="hashtag-button" href="/hashtag?name={{name}}">
+                        {{ruName}}
+                    </a>
+                {{/each}}
+            </section>
+        </section>
+    </li>
+    {{/each}}
+</ul>
+{{^}}
+    <p>Похоже приключений не осталось... Но попозже обязательно появятся!</p>
+{{/if}}

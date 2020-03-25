@@ -1,0 +1,133 @@
+.scene-container
+{
+    margin-left: 45px;
+    margin-top: 59px;
+    position: relative;
+}
+
+.scene-description
+{
+    color: #FFF;
+    display: block;
+    position: absolute;
+    width: 487px;
+    vertical-align: center;
+    font: inherit;
+    font-size: 22px;
+    margin: 0;
+}
+
+.black-text
+{
+    color: #000;
+}
+
+.scene-img-container
+{
+    position: relative;
+    width: 950px;
+    height: 380px;
+    margin: 0;
+    object-fit: cover;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.scene-img
+{
+    width: 100%;
+}
+
+.scene-description-1
+{
+    top: 30px;
+    left: 30px;
+    text-align: start;
+}
+
+.scene-description-2
+{
+    top: 30px;
+    right: 30px;
+    text-align: end;
+}
+
+.scene-description-3
+{
+    text-align: end;
+    bottom: 30px;
+    right: 30px;
+    vertical-align: bottom;
+}
+
+.scene-description-4
+{
+    text-align: start;
+    bottom: 30px;
+    left: 30px;
+    vertical-align: bottom;
+}
+
+.action-button
+{
+    font-size: 34px;
+    text-decoration: none;
+    color: #FFF;
+    border-radius: 4px;
+    background-color: #555;
+    font-family: 'Roboto', sans-serif;
+    padding: 20px 30px;
+    margin: 15px;
+}
+
+.actions-container
+{
+    margin-top: 40px;
+    display: flex;
+    width: 950px;
+    justify-content: center;
+    align-items: flex-start;
+    align-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.achievements-box
+{
+    margin-top: 20px;
+    margin-left: 10px;
+    width: 930px;
+    display: flex;
+    flex-direction: row;
+}
+
+.achievement-box
+{
+    padding-top: 17px;
+    display: flex;
+    justify-content: flex-start;
+    height: 147px;
+}
+
+.achievement-img
+{
+    width: 147px;
+    height: 147px;
+}
+
+.achievement-name
+{
+    font-size: 48px;
+}
+
+.achievement-info
+{
+    margin-left: 21px;
+    font-size: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+

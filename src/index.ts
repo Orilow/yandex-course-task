@@ -1,5 +1,6 @@
 import path from 'path';
 
+import bodyParser from 'body-parser';
 import config from 'config';
 import express, { Response } from 'express';
 import hbs from 'hbs';
@@ -23,6 +24,7 @@ const app = express();
 const viewsDir = path.join(__dirname, 'views');
 const partialsDir = path.join(viewsDir, 'partials');
 const publicDir = path.join(__dirname, 'public');
+const clientJSDir = path.join(__dirname, '../client');
 
 app.set('view engine', 'hbs');
 app.set('views', viewsDir);
@@ -36,9 +38,10 @@ if (config.get('debug')) {
 
 //show express static Path
 app.use(express.static(publicDir));
+app.use(express.static(clientJSDir));
 
-//using middleware
 app.use(commonData);
+app.use(bodyParser.json());
 
 routes(app);
 

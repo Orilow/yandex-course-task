@@ -9,6 +9,7 @@
         "plugin:prettier/recommended" // this configuration must be last
     ],
     "env": {
+        "browser": true,
         "node": true
     },
     "rules": {

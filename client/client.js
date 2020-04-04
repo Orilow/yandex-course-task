@@ -1,68 +1,96 @@
 const LOAD_POINT_ID = 'loadMore';
-const DEFAULT_ADVENTURES_COUNT = 5;
+const ADVENTURES_LIMIT = 5;
+
+function buildImageSection(adventure, staticBasePath, defaultPictureLink) {
+    const imgBox = document.createElement('div');
+    imgBox.setAttribute('class', 'adventure-img-box');
+    const img = document.createElement('img');
+    img.setAttribute('class', 'adventure-img');
+    if (adventure.pictureLink) {
+        img.setAttribute('src', staticBasePath + adventure.pictureLink);
+    } else {
+        img.setAttribute('src', staticBasePath + defaultPictureLink);
+    }
+    imgBox.appendChild(img);
+
+    return imgBox;
+}
+
+function buildAdventureHashtagsSection(adventure) {
+    const hashtagsSection = document.createElement('section');
+    hashtagsSection.setAttribute('class', 'adventure-hashtags');
+    for (const hashtag of adventure.hashtags) {
+        const hashtag = document.createElement('a');
+        hashtag.setAttribute('class', 'hashtag-button');
+        hashtag.setAttribute('href', '/hashtag?name=' + hashtag.name);
+        hashtag.innerHTML = hashtag.ruName;
+        hashtagsSection.appendChild(hashtag);
+    }
+    return hashtagsSection;
+}
+
+function buildAdventureNameSection(adventure, adventuresCounter) {
+    const adventureNameSection = document.createElement('section');
+    adventureNameSection.setAttribute('class', 'adventure-name');
+    const adventureName = document.createElement('a');
+    adventureName.innerHTML = adventure.name;
+    if (adventuresCounter % ADVENTURES_LIMIT === 0) {
+        adventureName.setAttribute('id', LOAD_POINT_ID);
+        adventureName.setAttribute('custom-offset', adventuresCounter);
+    }
+    adventureName.setAttribute('href', '/scene?id=' + adventure.firstSceneId);
+
+    adventureNameSection.appendChild(adventureName);
+    return adventureNameSection;
+}
+
+function buildAdventureInfoSection(adventure, adventuresCounter) {
+    const adventureInfo = document.createElement('section');
+    adventureInfo.setAttribute('class', 'adventure-info');
+    const adventureNameSection = buildAdventureNameSection(adventure, adventuresCounter);
+    adventureInfo.appendChild(adventureNameSection);
+
+    if (adventure.description) {
+        const adventureDescription = document.createElement('section');
+        adventureDescription.setAttribute('class', 'adventure-description');
+        adventureDescription.innerHTML = adventure.description;
+        adventureInfo.appendChild(adventureDescription);
+    }
+
+    if (adventure.hashtags.length > 0) {
+        const hashtagsSection = buildAdventureHashtagsSection(adventure);
+        adventureInfo.appendChild(hashtagsSection);
+    }
+
+    return adventureInfo;
+}
 
 function buildAdditionalAdventures(data) {
     const staticBasePath = data.staticBasePath;
     const defaultPictureLink = data.defaultPictureLink;
-    const adventures = JSON.parse(data.adventures);
-    let adventuresCounter = DEFAULT_ADVENTURES_COUNT;
+    const adventures = data.adventures;
+    let adventuresCounter = ADVENTURES_LIMIT;
     for (const adventure of adventures) {
         adventuresCounter++;
         const newAdventure = document.createElement('li');
         newAdventure.setAttribute('class', 'adventure-box');
 
-        const imgBox = document.createElement('div');
-        imgBox.setAttribute('class', 'adventure-img-box');
-        const img = document.createElement('img');
-        img.setAttribute('class', 'adventure-img');
-        if (adventure.pictureLink) {
-            img.setAttribute('src', staticBasePath + adventure.pictureLink);
-        } else {
-            img.setAttribute('src', staticBasePath + defaultPictureLink);
-        }
-        imgBox.appendChild(img);
+        const imgBox = buildImageSection(adventure, staticBasePath, defaultPictureLink);
         newAdventure.appendChild(imgBox);
 
-        const adventureInfo = document.createElement('section');
-        adventureInfo.setAttribute('class', 'adventure-info');
-        const adventureNameSection = document.createElement('section');
-        adventureNameSection.setAttribute('class', 'adventure-name');
-        const adventureName = document.createElement('a');
-        adventureName.innerHTML = adventure.name;
-        if (adventuresCounter % 5 === 0) {
-            adventureName.setAttribute('id', LOAD_POINT_ID);
-            adventureName.setAttribute('custom-offset', adventuresCounter);
-        }
-        adventureName.setAttribute('href', '/scene?id=' + adventure.firstSceneId);
-
-        adventureNameSection.appendChild(adventureName);
-        adventureInfo.appendChild(adventureNameSection);
-
-        if (adventure.description) {
-            const adventureDescription = document.createElement('section');
-            adventureDescription.setAttribute('class', 'adventure-description');
-            adventureDescription.innerHTML = adventure.description;
-            adventureInfo.appendChild(adventureDescription);
-        }
-
-        if (adventure.hashtags) {
-            const hashtagsSection = document.createElement('section');
-            hashtagsSection.setAttribute('class', 'adventure-hashtags');
-            for (const hashtag of adventure.hashtags) {
-                const hashtag = document.createElement('a');
-                hashtag.setAttribute('class', 'hashtag-button');
-                hashtag.setAttribute('href', '/hashtag?name=' + hashtag.name);
-                hashtag.innerHTML = hashtag.ruName;
-                hashtagsSection.appendChild(hashtag);
-            }
-            adventureInfo.appendChild(hashtagsSection);
-        }
-
+        const adventureInfo = buildAdventureInfoSection(adventure, adventuresCounter);
         newAdventure.appendChild(adventureInfo);
 
         const adventureList = document.querySelector('.adventure-boxes');
         adventureList.appendChild(newAdventure);
     }
+}
+
+function buildErrorNotification() {
+    const notification = document.createElement('span');
+    notification.innerText = 'Сервер не отвечает... :( Попробуй позже еще раз!';
+    const adventureList = document.querySelector('.adventure-boxes');
+    adventureList.appendChild(notification);
 }
 
 function askDBCreator() {
@@ -82,16 +110,18 @@ function askDBCreator() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ loadAfterNumber: offset }),
+            body: JSON.stringify({ page: offset }),
         };
 
-        await fetch('/load-more-adventures', options).then(response => {
-            response.json().then(data => {
-                if (data !== '[]') {
-                    buildAdditionalAdventures(data);
-                }
-            });
-        });
+        await fetch('/load-more-adventures', options)
+            .then(response => {
+                response.json().then(data => {
+                    if (data !== '[]') {
+                        buildAdditionalAdventures(data);
+                    }
+                });
+            })
+            .catch(() => buildErrorNotification());
         window.localObserver.unobserve(target);
         target.removeAttribute('id');
         target.removeAttribute('custom-offset');
@@ -99,10 +129,9 @@ function askDBCreator() {
     return loadFromDB;
 }
 
-function loadMoreAdventures() {
+function createAdventuresLoadObserver() {
     const options = {
-        rootMargin: '0px',
-        threshold: 0.1,
+        threshold: 1,
     };
     const askDB = askDBCreator();
     const observer = new IntersectionObserver(askDB, options);
@@ -113,5 +142,5 @@ function loadMoreAdventures() {
 }
 
 document.addEventListener('DOMContentLoaded', function(event) {
-    loadMoreAdventures();
+    createAdventuresLoadObserver();
 });

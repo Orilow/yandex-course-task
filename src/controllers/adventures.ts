@@ -53,7 +53,7 @@ export async function adventuresList(req: ExtendedRequest, res: Response): Promi
 }
 
 export async function loadMoreAdventures(req: ExtendedRequest, res: Response) {
-    const skipNumber: number = req.body.loadAfterNumber;
+    const skipNumber: number = req.body.page;
     const additionalAdventures = await Adventure.findAll({
         include: [
             {
@@ -70,17 +70,16 @@ export async function loadMoreAdventures(req: ExtendedRequest, res: Response) {
         limit: 5,
     });
 
-    res.setHeader('Content-type', 'application/json');
     if (additionalAdventures.length === 0) {
-        res.end(JSON.stringify(additionalAdventures));
+        res.json(additionalAdventures);
     }
 
     const toSend = {
         staticBasePath: req.locals?.staticBasePath,
         defaultPictureLink: DEFAULT_PICTURE_LINK,
-        adventures: JSON.stringify(additionalAdventures),
+        adventures: additionalAdventures,
     };
-    res.end(JSON.stringify(toSend));
+    res.json(toSend);
 }
 
 export async function adventuresListByHashtag(req: ExtendedRequest, res: Response): Promise<void> {

@@ -1,7 +1,9 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const config = require('./config.js');
 const LOAD_POINT_ID = 'loadMore';
-const ADVENTURES_LIMIT = 5;
+const ADVENTURES_LIMIT = config.limit;
 let LOADING = false;
-let PAGE = 1;
+let PAGE = config.page;
 
 function buildImageSection(adventure, staticBasePath, defaultPictureLink) {
     const imgBox = document.createElement('div');

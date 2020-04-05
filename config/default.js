@@ -1,6 +1,7 @@
 'use strict';
 
 const dbConfig = require('./database');
+const adventuresPageConfig = require('./adventuresPageConfig');
 
 module.exports = {
     debug: true,
@@ -11,6 +12,10 @@ module.exports = {
         port: dbConfig.port,
         username: dbConfig.username,
         password: dbConfig.password,
-        database: dbConfig.database
-    }
+        database: dbConfig.database,
+    },
+    adventuresPage: {
+        limit: adventuresPageConfig.limit,
+        page: adventuresPageConfig.page,
+    },
 };

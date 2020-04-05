@@ -1,3 +1,4 @@
+import config from 'config';
 import { Response } from 'express';
 
 import { Adventure } from 'models/adventure';
@@ -6,6 +7,9 @@ import { PageData } from './scenes';
 import { ExtendedRequest } from '../extensions';
 import { error404 } from './errors';
 import Op = require('sequelize/lib/operators');
+
+const ADVENTURES_LIMIT: number = config.get('adventuresPage.limit');
+const START_PAGE: number = config.get('adventuresPage.page');
 
 interface AdventuresPageData extends PageData {
     adventures?: Adventure[];
@@ -31,7 +35,8 @@ export async function adventuresList(req: ExtendedRequest, res: Response): Promi
                 [Op.ne]: null,
             },
         },
-        limit: 5,
+        offset: START_PAGE * ADVENTURES_LIMIT,
+        limit: ADVENTURES_LIMIT,
     });
 
     const filtered = adventures.filter(adventure => adventure.firstSceneId != null);
@@ -52,7 +57,7 @@ export async function adventuresList(req: ExtendedRequest, res: Response): Promi
     res.render('index', data);
 }
 
-export async function loadMoreAdventures(req: ExtendedRequest, res: Response) {
+export async function loadMoreAdventures(req: ExtendedRequest, res: Response): Promise<void> {
     const page: number = req.body.page;
     const additionalAdventures = await Adventure.findAll({
         include: [
@@ -66,8 +71,8 @@ export async function loadMoreAdventures(req: ExtendedRequest, res: Response) {
                 [Op.ne]: null,
             },
         },
-        offset: page * 5,
-        limit: 5,
+        offset: page * ADVENTURES_LIMIT,
+        limit: ADVENTURES_LIMIT,
     });
 
     if (additionalAdventures.length === 0) {

@@ -9,13 +9,15 @@
         "build": "npm-run-all --parallel build:*",
         "build:ts": "tsc",
         "build:hbs": "copyfiles --up 1 \"./src/views/**/*\" \"./src/public/*\" dist/",
+        "webpack:dev": "webpack --mode=\"development\"",
+        "webpack:prod": "webpack --mode=\"production\"",
         "lint": "npm-run-all lint:*",
         "lint:css": "stylelint src/**/*.css",
         "lint:ts": "tsc --noEmit",
         "lint:es": "eslint --ext=.ts src/ --fix",
         "deps:all": "npm ci",
         "deps:production": "npm ci --production",
-        "dev": "tsc-watch --preserveWatchOutput --pretty --onSuccess \"npm-run-all build:hbs start\"",
+        "dev": "tsc-watch --preserveWatchOutput --pretty --onSuccess \"npm-run-all build:hbs webpack:dev start\"",
         "docker:build": "docker build -t $npm_package_name .",
         "docker:run": "docker run -p 8080:80 $npm_package_name",
         "heroku:login": "heroku container:login",
@@ -27,7 +29,7 @@
         "heroku-init": "heroku login && heroku create $npm_package_name",
         "start": "cross-env NODE_PATH=dist/ node dist/",
         "surge": "surge -p ./dist/public -d $npm_package_name.surge.sh",
-        "deploy": "npm-run-all build surge heroku"
+        "deploy": "npm-run-all build webpack:prod surge heroku"
     },
     "dependencies": {
         "body-parser": "^1.19.0",
@@ -65,7 +67,9 @@
         "stylelint-config-standard": "20.0.0",
         "surge": "0.21.3",
         "tsc-watch": "4.2.3",
-        "typescript": "3.8.3"
+        "typescript": "3.8.3",
+        "webpack": "^4.42.1",
+        "webpack-cli": "^3.3.11"
     },
     "husky": {
         "hooks": {

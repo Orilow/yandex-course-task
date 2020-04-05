@@ -1,5 +1,7 @@
 const LOAD_POINT_ID = 'loadMore';
 const ADVENTURES_LIMIT = 5;
+let LOADING = false;
+let PAGE = 1;
 
 function buildImageSection(adventure, staticBasePath, defaultPictureLink) {
     const imgBox = document.createElement('div');
@@ -93,47 +95,39 @@ function buildErrorNotification() {
     adventureList.appendChild(notification);
 }
 
-function askDBCreator() {
-    let counter = -1;
-
-    async function loadFromDB() {
-        counter++;
-        if (counter === 0) {
-            counter++;
-            return;
-        }
-
-        const target = document.getElementById(LOAD_POINT_ID);
-        const offset = target.getAttribute('custom-offset');
-        const options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ page: offset }),
-        };
-
-        await fetch('/load-more-adventures', options)
-            .then(response => {
-                response.json().then(data => {
-                    if (data !== '[]') {
-                        buildAdditionalAdventures(data);
-                    }
-                });
-            })
-            .catch(() => buildErrorNotification());
-        window.localObserver.unobserve(target);
-        target.removeAttribute('id');
-        target.removeAttribute('custom-offset');
+async function loadFromDB() {
+    if (LOADING) {
+        return;
     }
-    return loadFromDB;
+    const target = document.getElementById(LOAD_POINT_ID);
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ page: PAGE }),
+    };
+    LOADING = true;
+    await fetch('/load-more-adventures', options)
+        .then(response => {
+            response.json().then(data => {
+                if (data.length !== 0) {
+                    buildAdditionalAdventures(data);
+                }
+            });
+            PAGE++;
+        })
+        .catch(() => buildErrorNotification())
+        .finally(() => (LOADING = false));
+    window.localObserver.unobserve(target);
+    target.remove();
 }
 
 function createAdventuresLoadObserver() {
     const options = {
         threshold: 1,
     };
-    const askDB = askDBCreator();
+    const askDB = loadFromDB;
     const observer = new IntersectionObserver(askDB, options);
     window.localObserver = observer;
     const target = document.getElementById(LOAD_POINT_ID);
@@ -141,6 +135,6 @@ function createAdventuresLoadObserver() {
     observer.observe(target);
 }
 
-document.addEventListener('DOMContentLoaded', function(event) {
+window.onload = function() {
     createAdventuresLoadObserver();
-});
+};

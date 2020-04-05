@@ -53,7 +53,7 @@ export async function adventuresList(req: ExtendedRequest, res: Response): Promi
 }
 
 export async function loadMoreAdventures(req: ExtendedRequest, res: Response) {
-    const skipNumber: number = req.body.page;
+    const page: number = req.body.page;
     const additionalAdventures = await Adventure.findAll({
         include: [
             {
@@ -66,7 +66,7 @@ export async function loadMoreAdventures(req: ExtendedRequest, res: Response) {
                 [Op.ne]: null,
             },
         },
-        offset: skipNumber,
+        offset: page * 5,
         limit: 5,
     });
 

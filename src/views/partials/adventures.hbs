@@ -12,11 +12,7 @@
             {{/if}}
         </div>
         <section class="adventure-info">
-            {{#eq @index 4}}
-            <section class="adventure-name" custom-offset="5" id="loadMore">
-            {{else}}
             <section class="adventure-name">
-            {{/eq}}
                 {{#if firstSceneId}}
                 <a href="/scene?id={{firstSceneId}}">{{name}}</a>
                 {{^}}
@@ -34,6 +30,7 @@
         </section>
     </li>
     {{/each}}
+    <div id="loadMore"></div>
 </ul>
 {{^}}
     <p>Похоже приключений не осталось... Но попозже обязательно появятся!</p>

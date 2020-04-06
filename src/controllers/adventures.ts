@@ -5,18 +5,20 @@ import { Adventure } from 'models/adventure';
 import { Hashtag } from '../models/hashtag';
 import { PageData } from './scenes';
 import { ExtendedRequest } from '../extensions';
-import { error404 } from './errors';
 import Op = require('sequelize/lib/operators');
+import { error404 } from './errors';
 
 const ADVENTURES_LIMIT: number = config.get('adventuresPage.limit');
 const START_PAGE: number = config.get('adventuresPage.serverStartPage');
+
+const HASHTAGS_CACHE = {};
 
 interface AdventuresPageData extends PageData {
     adventures?: Adventure[];
 }
 
-interface HashtagPageData extends AdventuresPageData {
-    targetHashtag: string;
+interface HashtagPageData extends PageData {
+    targetHashtag?: string;
 }
 
 const DEFAULT_PICTURE_LINK = 'adventure_empty.jpg';
@@ -39,11 +41,14 @@ export async function adventuresList(req: ExtendedRequest, res: Response): Promi
         limit: ADVENTURES_LIMIT,
     });
 
-    const filtered = adventures.filter(adventure => adventure.firstSceneId != null);
-
-    for (const adventure of filtered) {
+    for (const adventure of adventures) {
         if (!adventure.pictureLink || adventure.pictureLink === '') {
             adventure.pictureLink = DEFAULT_PICTURE_LINK;
+        }
+        if (adventure.hastags) {
+            for (const hashtag of adventure.hastags) {
+                HASHTAGS_CACHE[hashtag.name] = hashtag.ruName;
+            }
         }
     }
 
@@ -51,7 +56,7 @@ export async function adventuresList(req: ExtendedRequest, res: Response): Promi
         meta,
         title,
         staticBasePath,
-        adventures: filtered,
+        adventures,
     };
 
     res.render('index', data);
@@ -92,9 +97,33 @@ export async function adventuresListByHashtag(req: ExtendedRequest, res: Respons
     if (!req.query.name) {
         return adventuresList(req, res);
     }
-    const taggedAdventures = await Hashtag.findAll({
+    const hashtagName = req.query.name;
+    const data: HashtagPageData = {
+        meta,
+        title,
+        staticBasePath,
+        targetHashtag: undefined,
+    };
+
+    if (!Object.prototype.hasOwnProperty.call(HASHTAGS_CACHE, hashtagName)) {
+        const hashtag = await Hashtag.findOne({
+            where: {
+                name: hashtagName,
+            },
+        });
+
+        HASHTAGS_CACHE[hashtagName] = hashtag.ruName;
+    }
+
+    data.targetHashtag = HASHTAGS_CACHE[hashtagName];
+    res.render('byHashtag', data);
+}
+
+export async function LoadAdventuresByHashtag(req: ExtendedRequest, res: Response): Promise<void> {
+    const hashtahName = req.body.hashtagName;
+    const adventures = await Hashtag.findOne({
         where: {
-            name: req.query.name,
+            name: hashtahName,
         },
         include: [
             {
@@ -107,17 +136,14 @@ export async function adventuresListByHashtag(req: ExtendedRequest, res: Respons
             },
         ],
     });
-
-    if (taggedAdventures.length === 0) {
+    if (adventures.length === 0) {
         return error404(req, res);
     }
 
-    const data: HashtagPageData = {
-        meta,
-        title,
-        staticBasePath,
-        targetHashtag: taggedAdventures[0].ruName,
-        adventures: taggedAdventures[0].adventures,
+    const toSend = {
+        staticBasePath: req.locals?.staticBasePath,
+        defaultPictureLink: DEFAULT_PICTURE_LINK,
+        adventures,
     };
-    res.render('byHashtag', data);
+    res.json(toSend);
 }

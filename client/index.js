@@ -1,4 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
+const adventuresBuilder = require('./adventureBuilder.js');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const config = require('../config/adventuresPageConfig.js');
 
 const ADVENTURES_LIMIT = config.limit;
@@ -124,7 +126,7 @@ async function loadFromDB(entries, observer) {
         .then(response => {
             response.json().then(data => {
                 if (data.length !== 0) {
-                    buildAdditionalAdventures(data);
+                    adventuresBuilder.buildAdventures(data);
                 }
             });
             currentPage++;

@@ -119,11 +119,11 @@ export async function adventuresListByHashtag(req: ExtendedRequest, res: Respons
     res.render('byHashtag', data);
 }
 
-export async function LoadAdventuresByHashtag(req: ExtendedRequest, res: Response): Promise<void> {
-    const hashtahName = req.body.hashtagName;
-    const adventures = await Hashtag.findOne({
+export async function loadAdventuresByHashtag(req: ExtendedRequest, res: Response): Promise<void> {
+    const hashtagName = req.body.hashtagName;
+    const hashtagWithAdventures = await Hashtag.findOne({
         where: {
-            name: hashtahName,
+            name: hashtagName,
         },
         include: [
             {
@@ -136,14 +136,14 @@ export async function LoadAdventuresByHashtag(req: ExtendedRequest, res: Respons
             },
         ],
     });
-    if (adventures.length === 0) {
+    if (hashtagWithAdventures.length === 0) {
         return error404(req, res);
     }
 
     const toSend = {
         staticBasePath: req.locals?.staticBasePath,
         defaultPictureLink: DEFAULT_PICTURE_LINK,
-        adventures,
+        adventures: hashtagWithAdventures.adventures,
     };
     res.json(toSend);
 }

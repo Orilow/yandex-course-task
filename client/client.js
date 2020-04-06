@@ -97,6 +97,21 @@ function buildErrorNotification() {
     adventureList.appendChild(notification);
 }
 
+function buildLoader(parentElement) {
+
+    const loaderBox = document.createElement('div');
+    loaderBox.setAttribute('class', 'loader-container');
+    const loader = document.createElement('div');
+    loader.setAttribute('class', 'loader');
+    loaderBox.appendChild(loader);
+    parentElement.appendChild(loaderBox);
+}
+
+function removeLoader() {
+    const loaderElem = document.querySelector('.loader-container');
+    loaderElem.remove();
+}
+
 async function loadFromDB() {
     if (LOADING) {
         return;
@@ -110,6 +125,7 @@ async function loadFromDB() {
         body: JSON.stringify({ page: PAGE }),
     };
     LOADING = true;
+    buildLoader(document.querySelector('.main-container'));
     await fetch('/load-more-adventures', options)
         .then(response => {
             response.json().then(data => {
@@ -120,7 +136,10 @@ async function loadFromDB() {
             PAGE++;
         })
         .catch(() => buildErrorNotification())
-        .finally(() => (LOADING = false));
+        .finally(() => {
+            LOADING = false;
+            removeLoader();
+        });
     window.localObserver.unobserve(target);
     target.remove();
 }

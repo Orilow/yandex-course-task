@@ -9,7 +9,7 @@ import { error404 } from './errors';
 import Op = require('sequelize/lib/operators');
 
 const ADVENTURES_LIMIT: number = config.get('adventuresPage.limit');
-const START_PAGE: number = config.get('adventuresPage.page');
+const START_PAGE: number = config.get('adventuresPage.serverStartPage');
 
 interface AdventuresPageData extends PageData {
     adventures?: Adventure[];

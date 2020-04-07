@@ -15,7 +15,8 @@ module.exports = {
         database: dbConfig.database,
     },
     adventuresPage: {
-        limit: adventuresPageConfig.limit,
-        page: adventuresPageConfig.page,
+        limit: 5,
+        serverStartPage: adventuresPageConfig.serverStartPage,
+        clientStartPage: adventuresPageConfig.clientStartPage,
     },
 };

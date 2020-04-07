@@ -1,9 +1,10 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const config = require('./config.js');
-const LOAD_POINT_ID = 'loadMore';
+const config = require('../config/adventuresPageConfig.js');
+
 const ADVENTURES_LIMIT = config.limit;
-let LOADING = false;
-let PAGE = config.page;
+const LOAD_POINT_ID = 'loadMore';
+let currentPage = config.clientStartPage;
+let isLoading = false;
 
 function buildImageSection(adventure, staticBasePath, defaultPictureLink) {
     const imgBox = document.createElement('div');
@@ -98,7 +99,6 @@ function buildErrorNotification() {
 }
 
 function buildLoader(parentElement) {
-
     const loaderBox = document.createElement('div');
     loaderBox.setAttribute('class', 'loader-container');
     const loader = document.createElement('div');
@@ -113,7 +113,7 @@ function removeLoader() {
 }
 
 async function loadFromDB() {
-    if (LOADING) {
+    if (isLoading) {
         return;
     }
     const target = document.getElementById(LOAD_POINT_ID);
@@ -122,9 +122,9 @@ async function loadFromDB() {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ page: PAGE }),
+        body: JSON.stringify({ page: currentPage }),
     };
-    LOADING = true;
+    isLoading = true;
     buildLoader(document.querySelector('.main-container'));
     await fetch('/load-more-adventures', options)
         .then(response => {
@@ -133,11 +133,11 @@ async function loadFromDB() {
                     buildAdditionalAdventures(data);
                 }
             });
-            PAGE++;
+            currentPage++;
         })
         .catch(() => buildErrorNotification())
         .finally(() => {
-            LOADING = false;
+            isLoading = false;
             removeLoader();
         });
     window.localObserver.unobserve(target);

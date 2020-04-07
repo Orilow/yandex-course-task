@@ -2,9 +2,12 @@
 const path = require('path');
 
 module.exports = {
-    entry: './client/client.js',
+    entry: {
+        index: './client/index.js',
+        config: './config/adventuresPageConfig',
+    },
     output: {
         path: path.resolve(__dirname, './dist/client/'),
-        filename: 'bundle.js',
+        filename: '[name].js',
     },
 };

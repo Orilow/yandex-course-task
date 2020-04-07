@@ -1,4 +1,5 @@
 module.exports = {
     limit: 5,
-    page: 0,
+    serverStartPage: 0,
+    clientStartPage: 1,
 };

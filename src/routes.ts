@@ -10,7 +10,7 @@ export default (app: Application): void => {
 
     app.get('/hashtag', adventuresListByHashtag);
 
-    app.post('/load-more-adventures', loadMoreAdventures);
+    app.get('/load-more-adventures', loadMoreAdventures);
 
     app.all('*', error404);
 };

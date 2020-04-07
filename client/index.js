@@ -11,11 +11,7 @@ function buildImageSection(adventure, staticBasePath, defaultPictureLink) {
     imgBox.setAttribute('class', 'adventure-img-box');
     const img = document.createElement('img');
     img.setAttribute('class', 'adventure-img');
-    if (adventure.pictureLink) {
-        img.setAttribute('src', staticBasePath + adventure.pictureLink);
-    } else {
-        img.setAttribute('src', staticBasePath + defaultPictureLink);
-    }
+    img.setAttribute('src', staticBasePath + (adventure.pictureLink || defaultPictureLink));
     imgBox.appendChild(img);
 
     return imgBox;
@@ -39,10 +35,6 @@ function buildAdventureNameSection(adventure, adventuresCounter) {
     adventureNameSection.setAttribute('class', 'adventure-name');
     const adventureName = document.createElement('a');
     adventureName.innerHTML = adventure.name;
-    if (adventuresCounter % ADVENTURES_LIMIT === 0) {
-        adventureName.setAttribute('id', LOAD_POINT_ID);
-        adventureName.setAttribute('custom-offset', adventuresCounter);
-    }
     adventureName.setAttribute('href', '/scene?id=' + adventure.firstSceneId);
 
     adventureNameSection.appendChild(adventureName);
@@ -86,6 +78,13 @@ function buildAdditionalAdventures(data) {
         const adventureInfo = buildAdventureInfoSection(adventure, adventuresCounter);
         newAdventure.appendChild(adventureInfo);
 
+        if (adventuresCounter % ADVENTURES_LIMIT === 0) {
+            const observeredDiv = document.createElement('div');
+            observeredDiv.setAttribute('id', LOAD_POINT_ID);
+            newAdventure.appendChild(observeredDiv);
+            window.localObserver.observe(observeredDiv);
+        }
+
         const adventureList = document.querySelector('.adventure-boxes');
         adventureList.appendChild(newAdventure);
     }
@@ -112,21 +111,16 @@ function removeLoader() {
     loaderElem.remove();
 }
 
-async function loadFromDB() {
+async function loadFromDB(entries, observer) {
     if (isLoading) {
         return;
     }
     const target = document.getElementById(LOAD_POINT_ID);
-    const options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ page: currentPage }),
-    };
     isLoading = true;
     buildLoader(document.querySelector('.main-container'));
-    await fetch('/load-more-adventures', options)
+    window.localObserver.unobserve(target);
+    target.remove();
+    await fetch('/load-more-adventures?page=' + currentPage)
         .then(response => {
             response.json().then(data => {
                 if (data.length !== 0) {
@@ -140,16 +134,21 @@ async function loadFromDB() {
             isLoading = false;
             removeLoader();
         });
-    window.localObserver.unobserve(target);
-    target.remove();
+}
+
+function tryGetMoreAdventures(entries) {
+    for (const entry of entries) {
+        if (entry.isIntersecting) {
+            loadFromDB();
+        }
+    }
 }
 
 function createAdventuresLoadObserver() {
     const options = {
         threshold: 1,
     };
-    const askDB = loadFromDB;
-    const observer = new IntersectionObserver(askDB, options);
+    const observer = new IntersectionObserver(tryGetMoreAdventures, options);
     window.localObserver = observer;
     const target = document.getElementById(LOAD_POINT_ID);
 

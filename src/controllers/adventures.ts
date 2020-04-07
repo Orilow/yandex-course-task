@@ -57,8 +57,8 @@ export async function adventuresList(req: ExtendedRequest, res: Response): Promi
     res.render('index', data);
 }
 
-export async function loadMoreAdventures(req: ExtendedRequest, res: Response): Promise<void> {
-    const page: number = req.body.page;
+export async function loadMoreAdventures(req: ExtendedRequest, res: Response): Promise<Response> {
+    const page: number = req.query.page;
     const additionalAdventures = await Adventure.findAll({
         include: [
             {
@@ -76,7 +76,7 @@ export async function loadMoreAdventures(req: ExtendedRequest, res: Response): P
     });
 
     if (additionalAdventures.length === 0) {
-        res.json(additionalAdventures);
+        return res.json(additionalAdventures);
     }
 
     const toSend = {
@@ -84,7 +84,7 @@ export async function loadMoreAdventures(req: ExtendedRequest, res: Response): P
         defaultPictureLink: DEFAULT_PICTURE_LINK,
         adventures: additionalAdventures,
     };
-    res.json(toSend);
+    return res.json(toSend);
 }
 
 export async function adventuresListByHashtag(req: ExtendedRequest, res: Response): Promise<void> {

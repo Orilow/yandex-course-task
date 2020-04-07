@@ -9,6 +9,7 @@
         "build": "npm-run-all --parallel build:*",
         "build:ts": "tsc",
         "build:hbs": "copyfiles --up 1 \"./src/views/**/*\" \"./src/public/*\" dist/",
+        "build:webpack:prod": "webpack:prod",
         "webpack:dev": "webpack --mode=\"development\"",
         "webpack:prod": "webpack --mode=\"production\"",
         "lint": "npm-run-all lint:*",
@@ -29,7 +30,7 @@
         "heroku-init": "heroku login && heroku create $npm_package_name",
         "start": "cross-env NODE_PATH=dist/ node dist/",
         "surge": "surge -p ./dist/public -d $npm_package_name.surge.sh",
-        "deploy": "npm-run-all build webpack:prod surge heroku"
+        "deploy": "npm-run-all build surge heroku"
     },
     "dependencies": {
         "body-parser": "^1.19.0",

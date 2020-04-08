@@ -1,7 +1,7 @@
 'use strict';
 
 const dbConfig = require('./database');
-const adventuresPageConfig = require('./adventuresPageConfig');
+const { limit, clientStartPage, serverStartPage } = require('./adventuresPageConfig');
 
 module.exports = {
     debug: true,
@@ -14,9 +14,5 @@ module.exports = {
         password: dbConfig.password,
         database: dbConfig.database,
     },
-    adventuresPage: {
-        limit: 5,
-        serverStartPage: adventuresPageConfig.serverStartPage,
-        clientStartPage: adventuresPageConfig.clientStartPage,
-    },
+    adventuresPage: { limit, clientStartPage, serverStartPage },
 };

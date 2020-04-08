@@ -2,7 +2,7 @@
 
 const packageMeta = require('../package.json');
 const dbConfig = require('./database');
-const adventuresPageConfig = require('./adventuresPageConfig');
+const { limit, clientStartPage, serverStartPage } = require('./adventuresPageConfig');
 
 // конфиг файлы открыты в учебных целях, иначе они бы были в .gitignore
 module.exports = {
@@ -16,9 +16,5 @@ module.exports = {
         password: dbConfig.password,
         database: dbConfig.database,
     },
-    adventuresPage: {
-        limit: 5,
-        serverStartPage: adventuresPageConfig.serverStartPage,
-        clientStartPage: adventuresPageConfig.clientStartPage,
-    },
+    adventuresPage: { limit, clientStartPage, serverStartPage },
 };

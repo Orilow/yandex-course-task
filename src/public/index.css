@@ -46,15 +46,16 @@ a {
 }
 
 .loader-container {
-    margin-bottom: 20px;
+    margin-top: 40px;
+    margin-bottom: 40px;
 }
 
 .loader {
     margin: 0 auto;
-    border: 10px solid #f3f3f3;
-    border-top: 10px solid #f49ec4;
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #f49ec4;
     border-radius: 50%;
-    width: 60px;
-    height: 60px;
+    width: 40px;
+    height: 40px;
     animation: spin 2s linear infinite;
 }

@@ -1,5 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const adventureBuilder = require('./adventureBuilder.js');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const loaderBuilder = require('./loaderBuilder.js');
 
 function buildAdventuresBoxWithAdventures(data) {
     const mainBox = document.querySelector('.main-container');
@@ -19,28 +21,27 @@ function buildEmptyAdventuresBox(notification) {
 async function loadAdventuresByHashtag() {
     const urlParams = new URLSearchParams(window.location.search);
     const hashtagName = urlParams.get('name');
-    const fetchOptions = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ hashtagName }),
-    };
+    loaderBuilder.buildLoader(document.querySelector('.main-container'));
 
-    await fetch('/load-hashtag-adventures', fetchOptions).then(response => {
-        response
-            .json()
-            .then(data => {
-                if (data.length !== 0) {
-                    buildAdventuresBoxWithAdventures(data);
-                } else {
-                    buildEmptyAdventuresBox(
-                        'Похоже этот Тэг только появился, раз к нему не привязаны приключения! Попробуйте позже!',
-                    );
-                }
-            })
-            .catch(err => buildEmptyAdventuresBox('На сервере произошла ошибка! Попробуйте позже.' + err));
-    });
+    await fetch('/load-hashtag-adventures?name=' + hashtagName)
+        .then(response => {
+            response
+                .json()
+                .then(data => {
+                    if (data.length !== 0) {
+                        buildAdventuresBoxWithAdventures(data);
+                    } else {
+                        buildEmptyAdventuresBox(
+                            'Похоже этот Тэг только появился, раз к нему не привязаны приключения! Попробуйте позже!',
+                        );
+                    }
+                })
+                .catch(() =>
+                    buildEmptyAdventuresBox('Что-то странное пришло от сервера, не могу корректно прочитать...'),
+                );
+        })
+        .catch(() => buildEmptyAdventuresBox('На сервере произошла ошибка! Попробуйте позже.'))
+        .finally(() => loaderBuilder.removeLoader());
 }
 
 window.addEventListener('DOMContentLoaded', function(event) {

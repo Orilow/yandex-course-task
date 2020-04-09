@@ -5,13 +5,13 @@ import { Adventure } from 'models/adventure';
 import { Hashtag } from '../models/hashtag';
 import { PageData } from './scenes';
 import { ExtendedRequest } from '../extensions';
-import Op = require('sequelize/lib/operators');
 import { error404 } from './errors';
+import Op from 'sequelize/lib/operators';
 
 const ADVENTURES_LIMIT: number = config.get('adventuresPage.limit');
 const START_PAGE: number = config.get('adventuresPage.serverStartPage');
 
-const HASHTAGS_CACHE = {};
+const HASHTAGS_CACHE = new Map();
 
 interface AdventuresPageData extends PageData {
     adventures?: Adventure[];
@@ -47,7 +47,7 @@ export async function adventuresList(req: ExtendedRequest, res: Response): Promi
         }
         if (adventure.hastags) {
             for (const hashtag of adventure.hastags) {
-                HASHTAGS_CACHE[hashtag.name] = hashtag.ruName;
+                HASHTAGS_CACHE.set(hashtag.name, hashtag.ruName);
             }
         }
     }
@@ -92,7 +92,7 @@ export async function loadMoreAdventures(req: ExtendedRequest, res: Response): P
     return res.json(toSend);
 }
 
-export async function adventuresListByHashtag(req: ExtendedRequest, res: Response): Promise<void> {
+export async function loadPageByHashtag(req: ExtendedRequest, res: Response): Promise<void> {
     const { meta, title, staticBasePath } = req.locals || {};
     if (!req.query.name) {
         return adventuresList(req, res);
@@ -105,22 +105,22 @@ export async function adventuresListByHashtag(req: ExtendedRequest, res: Respons
         targetHashtag: undefined,
     };
 
-    if (!Object.prototype.hasOwnProperty.call(HASHTAGS_CACHE, hashtagName)) {
+    if (!HASHTAGS_CACHE.has(hashtagName)) {
         const hashtag = await Hashtag.findOne({
             where: {
                 name: hashtagName,
             },
         });
 
-        HASHTAGS_CACHE[hashtagName] = hashtag.ruName;
+        HASHTAGS_CACHE.set(hashtagName, hashtag.ruName);
     }
 
-    data.targetHashtag = HASHTAGS_CACHE[hashtagName];
+    data.targetHashtag = HASHTAGS_CACHE.get(hashtagName);
     res.render('byHashtag', data);
 }
 
 export async function loadAdventuresByHashtag(req: ExtendedRequest, res: Response): Promise<void> {
-    const hashtagName = req.body.hashtagName;
+    const hashtagName = req.query.name;
     const hashtagWithAdventures = await Hashtag.findOne({
         where: {
             name: hashtagName,

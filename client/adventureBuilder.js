@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const config = require('./config.js');
+const config = require('../config/adventuresPageConfig.js');
 const ADVENTURES_LIMIT = config.limit;
 const LOAD_POINT_ID = config.loadPointId;
 
@@ -8,11 +8,7 @@ function buildImageSection(adventure, staticBasePath, defaultPictureLink) {
     imgBox.setAttribute('class', 'adventure-img-box');
     const img = document.createElement('img');
     img.setAttribute('class', 'adventure-img');
-    if (adventure.pictureLink) {
-        img.setAttribute('src', staticBasePath + adventure.pictureLink);
-    } else {
-        img.setAttribute('src', staticBasePath + defaultPictureLink);
-    }
+    img.setAttribute('src', staticBasePath + (adventure.pictureLink || defaultPictureLink));
     imgBox.appendChild(img);
 
     return imgBox;
@@ -36,10 +32,6 @@ function buildAdventureNameSection(adventure, adventuresCounter) {
     adventureNameSection.setAttribute('class', 'adventure-name');
     const adventureName = document.createElement('a');
     adventureName.innerHTML = adventure.name;
-    if (adventuresCounter % ADVENTURES_LIMIT === 0) {
-        adventureName.setAttribute('id', LOAD_POINT_ID);
-        adventureName.setAttribute('custom-offset', adventuresCounter);
-    }
     adventureName.setAttribute('href', '/scene?id=' + adventure.firstSceneId);
 
     adventureNameSection.appendChild(adventureName);
@@ -82,6 +74,13 @@ function buildAdventures(data) {
 
         const adventureInfo = buildAdventureInfoSection(adventure, adventuresCounter);
         newAdventure.appendChild(adventureInfo);
+
+        if (adventuresCounter % ADVENTURES_LIMIT === 0) {
+            const observeredDiv = document.createElement('div');
+            observeredDiv.setAttribute('id', LOAD_POINT_ID);
+            newAdventure.appendChild(observeredDiv);
+            window.localObserver.observe(observeredDiv);
+        }
 
         const adventureList = document.querySelector('.adventure-boxes');
         adventureList.appendChild(newAdventure);

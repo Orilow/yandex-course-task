@@ -36,6 +36,11 @@ async function loadAdventuresByHashtag() {
                 .then(data => {
                     if (data.length !== 0) {
                         buildAdventuresBoxWithAdventures(data, loadAdventuresByHashtag);
+                        window.history.pushState(
+                            Object.assign(data, { hashtagRuName: this.hashtagRuName, pageType: 'hashtag' }),
+                            '',
+                            '/hashtag?name=' + this.hashtagName,
+                        );
                     } else {
                         adventuresBuilder.buildEmptyAdventuresBox(
                             'Похоже этот Тэг только появился, раз к нему не привязаны приключения! Попробуйте позже!',
@@ -104,6 +109,7 @@ function createAdventuresLoadObserver() {
 }
 
 window.onload = function() {
+    window.history.pushState({}, '', '/');
     createAdventuresLoadObserver();
 };
 
@@ -118,3 +124,14 @@ function setHashtagListener() {
 }
 
 document.addEventListener('DOMContentLoaded', setHashtagListener);
+window.addEventListener('popstate', function(e) {
+    const data = e.state;
+    if (data !== null) {
+        if (data.pageType) {
+            rebuildMainBoxForHashtagPage(data.hashtagRuName);
+            buildAdventuresBoxWithAdventures(data, loadAdventuresByHashtag);
+        } else {
+            window.location.replace('/');
+        }
+    }
+});

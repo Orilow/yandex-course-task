@@ -4,7 +4,6 @@ const path = require('path');
 module.exports = {
     entry: {
         index: './client/index.js',
-        hashtagPage: './client/hashtagPage.js',
         config: './config/adventuresPageConfig',
     },
     output: {

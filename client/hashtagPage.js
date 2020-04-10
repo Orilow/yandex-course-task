@@ -1,6 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const adventureBuilder = require('./adventureBuilder.js');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const loaderBuilder = require('./loaderBuilder.js');
 
 function buildAdventuresBoxWithAdventures(data) {

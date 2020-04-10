@@ -1,8 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const adventuresBuilder = require('./adventureBuilder.js');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const loaderBuilder = require('./loaderBuilder.js');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const config = require('../config/adventuresPageConfig.js');
 
 const LOAD_POINT_ID = config.loadPointId;

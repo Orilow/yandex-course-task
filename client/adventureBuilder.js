@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const config = require('../config/adventuresPageConfig.js');
 const ADVENTURES_LIMIT = config.limit;
 const LOAD_POINT_ID = config.loadPointId;

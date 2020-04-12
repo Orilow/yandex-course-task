@@ -30,30 +30,26 @@ async function loadAdventuresByHashtag() {
     loaderBuilder.buildLoader(document.querySelector('.main-container'));
 
     await fetch('/hashtag?name=' + this.hashtagName)
-        .then(response => {
-            response
-                .json()
-                .then(data => {
-                    if (data.length !== 0) {
-                        buildAdventuresBoxWithAdventures(data, loadAdventuresByHashtag);
-                        window.history.pushState(
-                            Object.assign(data, { hashtagRuName: this.hashtagRuName, pageType: 'hashtag' }),
-                            '',
-                            '/hashtag?name=' + this.hashtagName,
-                        );
-                    } else {
-                        adventuresBuilder.buildEmptyAdventuresBox(
-                            'Похоже этот Тэг только появился, раз к нему не привязаны приключения! Попробуйте позже!',
-                        );
-                    }
-                })
-                .catch(err =>
-                    adventuresBuilder.buildEmptyAdventuresBox(
-                        'Что-то странное пришло от сервера, не могу корректно прочитать...' + err,
-                    ),
+        .then(response => response.json())
+        .then(data => {
+            if (data.length !== 0) {
+                buildAdventuresBoxWithAdventures(data, loadAdventuresByHashtag);
+                window.history.pushState(
+                    Object.assign(data, { hashtagRuName: this.hashtagRuName, pageType: 'hashtag' }),
+                    '',
+                    '/hashtag?name=' + this.hashtagName,
                 );
+            } else {
+                adventuresBuilder.buildEmptyAdventuresBox(
+                    'Похоже этот Тэг только появился, раз к нему не привязаны приключения! Попробуйте позже!',
+                );
+            }
         })
-        .catch(() => adventuresBuilder.buildEmptyAdventuresBox('На сервере произошла ошибка! Попробуйте позже.'))
+        .catch(error =>
+            adventuresBuilder.buildEmptyAdventuresBox(
+                'Ах, произошла ошибка! Передайте разработчикам сайта это: ' + error,
+            ),
+        )
         .finally(() => loaderBuilder.removeLoader());
 }
 
@@ -74,12 +70,11 @@ async function loadFromDB(entries, observer) {
     window.localObserver.unobserve(target);
     target.remove();
     await fetch('/load-more-adventures?page=' + currentPage)
-        .then(response => {
-            response.json().then(data => {
-                if (data.length !== 0) {
-                    adventuresBuilder.buildAdventures(data, loadAdventuresByHashtag);
-                }
-            });
+        .then(response => response.json())
+        .then(data => {
+            if (data.length !== 0) {
+                adventuresBuilder.buildAdventures(data, loadAdventuresByHashtag);
+            }
             currentPage++;
         })
         .catch(() => buildErrorNotification())
@@ -116,10 +111,14 @@ window.onload = function() {
 function setHashtagListener() {
     const hashtagElems = document.querySelectorAll('.hashtag-button');
     for (const el of hashtagElems) {
-        el.onclick = loadAdventuresByHashtag.bind({
-            hashtagName: el.getAttribute('hashtag-name'),
-            hashtagRuName: el.innerHTML,
-        });
+        el.onclick = function(event) {
+            event.preventDefault();
+            const context = {
+                hashtagName: el.getAttribute('hashtag-name'),
+                hashtagRuName: el.innerHTML,
+            };
+            loadAdventuresByHashtag.call(context);
+        };
     }
 }
 

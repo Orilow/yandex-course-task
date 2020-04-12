@@ -81,9 +81,7 @@ function buildAdventureInfoSection(adventure) {
 }
 
 function buildAdventures(data, hashtagEventFunc) {
-    const staticBasePath = data.staticBasePath;
-    const defaultPictureLink = data.defaultPictureLink;
-    const adventures = data.adventures;
+    const { staticBasePath, defaultPictureLink, adventures } = data;
     let adventuresCounter = ADVENTURES_LIMIT;
     for (const adventure of adventures) {
         adventuresCounter++;

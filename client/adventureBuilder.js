@@ -12,10 +12,14 @@ function buildEmptyAdventuresBox(notification) {
 function addHashtagListener(func) {
     const hashtagElems = document.querySelectorAll('.hashtag-button');
     for (const el of hashtagElems) {
-        el.onclick = func.bind({
-            hashtagName: el.getAttribute('hashtag-name'),
-            hashtagRuName: el.innerHTML,
-        });
+        el.onclick = function(event) {
+            event.preventDefault();
+            const context = {
+                hashtagName: el.getAttribute('hashtag-name'),
+                hashtagRuName: el.innerHTML,
+            };
+            func.call(context);
+        };
     }
 }
 
@@ -37,6 +41,7 @@ function buildAdventureHashtagsSection(adventure, hashtagFunc) {
         const hashtagElem = document.createElement('a');
         hashtagElem.setAttribute('class', 'hashtag-button');
         hashtagElem.setAttribute('hashtag-name', hashtag.name);
+        hashtagElem.setAttribute('href', '/hashtag?name=' + hashtag.name);
         hashtagElem.innerHTML = hashtag.ruName;
         hashtagsSection.appendChild(hashtagElem);
     }

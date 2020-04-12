@@ -62,7 +62,7 @@ export async function adventuresList(req: ExtendedRequest, res: Response): Promi
     res.render('index', data);
 }
 
-export async function loadMoreAdventures(req: ExtendedRequest, res: Response): Promise<Response> {
+export async function adventuresJSON(req: ExtendedRequest, res: Response): Promise<Response> {
     const page: number = req.query.page;
     const additionalAdventures = await Adventure.findAll({
         include: [
@@ -119,7 +119,7 @@ export async function loadPageByHashtag(req: ExtendedRequest, res: Response): Pr
     res.render('byHashtag', data);
 }
 
-export async function loadAdventuresByHashtag(req: ExtendedRequest, res: Response): Promise<void> {
+export async function adventuresListByHashtag(req: ExtendedRequest, res: Response): Promise<void> {
     const hashtagName = req.query.name;
     const hashtagWithAdventures = await Hashtag.findOne({
         where: {

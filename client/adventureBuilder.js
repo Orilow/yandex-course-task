@@ -1,4 +1,5 @@
 const config = require('../config/adventuresPageConfig.js');
+const loaderBuilder = require('./loaderBuilder.js');
 const ADVENTURES_LIMIT = config.limit;
 const LOAD_POINT_ID = config.loadPointId;
 
@@ -14,10 +15,17 @@ function addHashtagListener(func) {
     for (const el of hashtagElems) {
         el.onclick = function(event) {
             event.preventDefault();
+            const currentHistoryState = history.state;
+            history.replaceState(
+                Object.assign(currentHistoryState, { withJSON: true, prevUrl: window.location.href }),
+                '',
+                window.location,
+            );
             const context = {
                 hashtagName: el.getAttribute('hashtag-name'),
                 hashtagRuName: el.innerHTML,
             };
+            console.log(func);
             func.call(context);
         };
     }
@@ -107,7 +115,54 @@ function buildAdventures(data, hashtagEventFunc) {
     addHashtagListener(hashtagEventFunc);
 }
 
+function buildAdventuresBoxWithAdventures(data, hashtagEventFunc) {
+    const mainBox = document.querySelector('.main-container');
+    const adventuresBox = document.createElement('ul');
+    adventuresBox.setAttribute('class', 'adventure-boxes');
+    mainBox.appendChild(adventuresBox);
+    buildAdventures(data, hashtagEventFunc);
+}
+
+function rebuildMainBoxForHashtagPage(hashtagRuName) {
+    document.querySelector('.main-container').remove();
+    const mainBox = document.createElement('div');
+    mainBox.setAttribute('class', 'main-container');
+    const hashtagBox = document.createElement('div');
+    hashtagBox.setAttribute('class', 'searching-hashtag');
+    hashtagBox.innerHTML = hashtagRuName;
+    mainBox.appendChild(hashtagBox);
+    document.body.appendChild(mainBox);
+}
+
+async function loadAdventuresByHashtag() {
+    rebuildMainBoxForHashtagPage(this.hashtagRuName);
+    loaderBuilder.buildLoader(document.querySelector('.main-container'));
+
+    await fetch('/load-hashtag-adventures?name=' + this.hashtagName)
+        .then(response => response.json())
+        .then(data => {
+            if (data.length !== 0) {
+                buildAdventuresBoxWithAdventures(data, loadAdventuresByHashtag);
+                window.history.pushState(
+                    Object.assign(data, { hashtagRuName: this.hashtagRuName, pageType: 'hashtag' }),
+                    '',
+                    '/hashtag?name=' + this.hashtagName,
+                );
+            } else {
+                buildEmptyAdventuresBox(
+                    'Похоже этот Тэг только появился, раз к нему не привязаны приключения! Попробуйте позже!',
+                );
+            }
+        })
+        .catch(error => buildEmptyAdventuresBox('Ах, произошла ошибка! Передайте разработчикам сайта это: ' + error))
+        .finally(() => loaderBuilder.removeLoader());
+}
+
 module.exports = {
+    addHashtagListener,
     buildAdventures,
+    buildAdventuresBoxWithAdventures,
     buildEmptyAdventuresBox,
+    loadAdventuresByHashtag,
+    rebuildMainBoxForHashtagPage,
 };

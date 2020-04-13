@@ -9,7 +9,7 @@
         "build": "npm-run-all --parallel build:*",
         "build:ts": "tsc",
         "build:hbs": "copyfiles --up 1 \"./src/views/**/*\" \"./src/public/*\" dist/",
-        "build:webpack:prod": "webpack:prod",
+        "build:webpack-prod": "webpack --mode=\"production\"",
         "webpack:dev": "webpack --mode=\"development\"",
         "webpack:prod": "webpack --mode=\"production\"",
         "lint": "npm-run-all lint:*",

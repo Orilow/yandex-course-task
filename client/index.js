@@ -6,53 +6,6 @@ const LOAD_POINT_ID = config.loadPointId;
 let currentPage = config.clientStartPage;
 let isLoading = false;
 
-function buildAdventuresBoxWithAdventures(data, hashtagEventFunc) {
-    const mainBox = document.querySelector('.main-container');
-    const adventuresBox = document.createElement('ul');
-    adventuresBox.setAttribute('class', 'adventure-boxes');
-    mainBox.appendChild(adventuresBox);
-    adventuresBuilder.buildAdventures(data, hashtagEventFunc);
-}
-
-function rebuildMainBoxForHashtagPage(hashtagRuName) {
-    document.querySelector('.main-container').remove();
-    const mainBox = document.createElement('div');
-    mainBox.setAttribute('class', 'main-container');
-    const hashtagBox = document.createElement('div');
-    hashtagBox.setAttribute('class', 'searching-hashtag');
-    hashtagBox.innerHTML = hashtagRuName;
-    mainBox.appendChild(hashtagBox);
-    document.body.appendChild(mainBox);
-}
-
-async function loadAdventuresByHashtag() {
-    rebuildMainBoxForHashtagPage(this.hashtagRuName);
-    loaderBuilder.buildLoader(document.querySelector('.main-container'));
-
-    await fetch('/hashtag?name=' + this.hashtagName)
-        .then(response => response.json())
-        .then(data => {
-            if (data.length !== 0) {
-                buildAdventuresBoxWithAdventures(data, loadAdventuresByHashtag);
-                window.history.pushState(
-                    Object.assign(data, { hashtagRuName: this.hashtagRuName, pageType: 'hashtag' }),
-                    '',
-                    '/hashtag?name=' + this.hashtagName,
-                );
-            } else {
-                adventuresBuilder.buildEmptyAdventuresBox(
-                    'Похоже этот Тэг только появился, раз к нему не привязаны приключения! Попробуйте позже!',
-                );
-            }
-        })
-        .catch(error =>
-            adventuresBuilder.buildEmptyAdventuresBox(
-                'Ах, произошла ошибка! Передайте разработчикам сайта это: ' + error,
-            ),
-        )
-        .finally(() => loaderBuilder.removeLoader());
-}
-
 function buildErrorNotification() {
     const notification = document.createElement('span');
     notification.innerText = 'Сервер не отвечает... :( Попробуй позже еще раз!';
@@ -73,7 +26,7 @@ async function loadFromDB(entries, observer) {
         .then(response => response.json())
         .then(data => {
             if (data.length !== 0) {
-                adventuresBuilder.buildAdventures(data, loadAdventuresByHashtag);
+                adventuresBuilder.buildAdventures(data, adventuresBuilder.loadAdventuresByHashtag);
             }
             currentPage++;
         })
@@ -104,33 +57,25 @@ function createAdventuresLoadObserver() {
 }
 
 window.onload = function() {
-    window.history.pushState({}, '', '/');
+    window.history.replaceState({}, '', '/');
     createAdventuresLoadObserver();
 };
 
-function setHashtagListener() {
-    const hashtagElems = document.querySelectorAll('.hashtag-button');
-    for (const el of hashtagElems) {
-        el.onclick = function(event) {
-            event.preventDefault();
-            const context = {
-                hashtagName: el.getAttribute('hashtag-name'),
-                hashtagRuName: el.innerHTML,
-            };
-            loadAdventuresByHashtag.call(context);
-        };
-    }
+function addHashtagListener() {
+    adventuresBuilder.addHashtagListener(adventuresBuilder.loadAdventuresByHashtag);
 }
 
-document.addEventListener('DOMContentLoaded', setHashtagListener);
+document.addEventListener('DOMContentLoaded', addHashtagListener);
 window.addEventListener('popstate', function(e) {
     const data = e.state;
     if (data !== null) {
         if (data.pageType) {
-            rebuildMainBoxForHashtagPage(data.hashtagRuName);
-            buildAdventuresBoxWithAdventures(data, loadAdventuresByHashtag);
+            if (data.withJSON) {
+                adventuresBuilder.rebuildMainBoxForHashtagPage(data.hashtagRuName);
+                adventuresBuilder.buildAdventuresBoxWithAdventures(data, adventuresBuilder.loadAdventuresByHashtag);
+            }
         } else {
-            window.location.replace('/');
+            window.location.reload(true);
         }
     }
 });

@@ -17,7 +17,7 @@ interface AdventuresPageData extends PageData {
     adventures?: Adventure[];
 }
 
-interface HashtagPageData extends PageData {
+interface HashtagPageData extends AdventuresPageData {
     targetHashtag?: string;
 }
 
@@ -92,34 +92,43 @@ export async function adventuresJSON(req: ExtendedRequest, res: Response): Promi
     return res.json(toSend);
 }
 
-export async function loadPageByHashtag(req: ExtendedRequest, res: Response): Promise<void> {
+export async function adventuresListByHashtag(req: ExtendedRequest, res: Response): Promise<void> {
     const { meta, title, staticBasePath } = req.locals || {};
     if (!req.query.name) {
         return adventuresList(req, res);
     }
-    const hashtagName = req.query.name;
+    const taggedAdventures = await Hashtag.findAll({
+        where: {
+            name: req.query.name,
+        },
+        include: [
+            {
+                model: Adventure,
+                include: [
+                    {
+                        model: Hashtag,
+                    },
+                ],
+            },
+        ],
+    });
+
+    if (taggedAdventures.length === 0) {
+        return error404(req, res);
+    }
+
     const data: HashtagPageData = {
         meta,
         title,
         staticBasePath,
-        targetHashtag: undefined,
+        targetHashtag: taggedAdventures[0].ruName,
+        adventures: taggedAdventures[0].adventures,
     };
 
-    if (!HASHTAGS_CACHE.has(hashtagName)) {
-        const hashtag = await Hashtag.findOne({
-            where: {
-                name: hashtagName,
-            },
-        });
-
-        HASHTAGS_CACHE.set(hashtagName, hashtag.ruName);
-    }
-
-    data.targetHashtag = HASHTAGS_CACHE.get(hashtagName);
     res.render('byHashtag', data);
 }
 
-export async function adventuresListByHashtag(req: ExtendedRequest, res: Response): Promise<void> {
+export async function adventuresListByHashtagJSON(req: ExtendedRequest, res: Response): Promise<void> {
     const hashtagName = req.query.name;
     const hashtagWithAdventures = await Hashtag.findOne({
         where: {

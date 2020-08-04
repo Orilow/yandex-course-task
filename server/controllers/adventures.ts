@@ -1,12 +1,11 @@
 import config from 'config';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
-import { Adventure } from 'models/adventure';
-import { Hashtag } from '../models/hashtag';
-import { PageData } from './scenes';
-import { ExtendedRequest } from '../extensions';
+import Adventure from 'models/adventure';
 import { error404 } from './errors';
+import Hashtag from 'models/hashtag';
 import Op from 'sequelize/lib/operators';
+import { PageData } from './scenes';
 
 const ADVENTURES_LIMIT: number = config.get('adventuresPage.limit');
 const START_PAGE: number = config.get('adventuresPage.serverStartPage');
@@ -23,8 +22,8 @@ interface HashtagPageData extends AdventuresPageData {
 
 const DEFAULT_PICTURE_LINK = 'adventure_empty.jpg';
 
-export async function adventuresList(req: ExtendedRequest, res: Response): Promise<void> {
-    const { meta, title, staticBasePath } = req.locals || {};
+export async function adventuresList(req: Request, res: Response): Promise<void> {
+    const { meta, title, staticBasePath } = { meta: undefined, title: undefined, staticBasePath: undefined };
     const adventures = await Adventure.findAll({
         include: [
             {
@@ -45,8 +44,8 @@ export async function adventuresList(req: ExtendedRequest, res: Response): Promi
         if (!adventure.pictureLink || adventure.pictureLink === '') {
             adventure.pictureLink = DEFAULT_PICTURE_LINK;
         }
-        if (adventure.hastags) {
-            for (const hashtag of adventure.hastags) {
+        if (adventure.hashtags) {
+            for (const hashtag of adventure.hashtags) {
                 HASHTAGS_CACHE.set(hashtag.name, hashtag.ruName);
             }
         }
@@ -62,7 +61,7 @@ export async function adventuresList(req: ExtendedRequest, res: Response): Promi
     res.render('index', data);
 }
 
-export async function adventuresJSON(req: ExtendedRequest, res: Response): Promise<Response> {
+export async function adventuresJSON(req: Request, res: Response): Promise<Response> {
     const page: number = req.query.page;
     const additionalAdventures = await Adventure.findAll({
         include: [
@@ -85,15 +84,15 @@ export async function adventuresJSON(req: ExtendedRequest, res: Response): Promi
     }
 
     const toSend = {
-        staticBasePath: req.locals?.staticBasePath,
+        staticBasePath: null,
         defaultPictureLink: DEFAULT_PICTURE_LINK,
         adventures: additionalAdventures,
     };
     return res.json(toSend);
 }
 
-export async function adventuresListByHashtag(req: ExtendedRequest, res: Response): Promise<void> {
-    const { meta, title, staticBasePath } = req.locals || {};
+export async function adventuresListByHashtag(req: Request, res: Response): Promise<void> {
+    const { meta, title, staticBasePath } = { meta: undefined, title: undefined, staticBasePath: undefined };
     if (!req.query.name) {
         return adventuresList(req, res);
     }
@@ -128,7 +127,7 @@ export async function adventuresListByHashtag(req: ExtendedRequest, res: Respons
     res.render('byHashtag', data);
 }
 
-export async function adventuresListByHashtagJSON(req: ExtendedRequest, res: Response): Promise<void> {
+export async function adventuresListByHashtagJSON(req: Request, res: Response): Promise<void> {
     const hashtagName = req.query.name;
     const hashtagWithAdventures = await Hashtag.findOne({
         where: {
@@ -145,12 +144,12 @@ export async function adventuresListByHashtagJSON(req: ExtendedRequest, res: Res
             },
         ],
     });
-    if (hashtagWithAdventures.length === 0) {
+    if (!hashtagWithAdventures) {
         return error404(req, res);
     }
 
     const toSend = {
-        staticBasePath: req.locals?.staticBasePath,
+        staticBasePath: null,
         defaultPictureLink: DEFAULT_PICTURE_LINK,
         adventures: hashtagWithAdventures.adventures,
     };

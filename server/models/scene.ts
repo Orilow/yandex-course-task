@@ -1,18 +1,24 @@
-import { AutoIncrement, Column, DataType, HasMany, Model, PrimaryKey, Table } from 'sequelize-typescript';
-import { Action } from './action';
-import { Achievement } from './achievement';
+import { BelongsTo, Column, DataType, ForeignKey, HasMany, Model, PrimaryKey, Table } from 'sequelize-typescript';
+
+import Achievement from './achievement';
+import Action from './action';
+import Adventure from './adventure';
 
 @Table({
     timestamps: false,
     tableName: 'scene',
 })
-export class Scene extends Model<Scene> {
-    @AutoIncrement
+export default class Scene extends Model<Scene> {
     @PrimaryKey
-    @Column(DataType.INTEGER)
-    get id(): number {
-        return this.getDataValue('id');
-    }
+    @Column
+    id!: number;
+
+    @ForeignKey(() => Adventure)
+    @Column
+    adventureId?: number;
+
+    @BelongsTo(() => Adventure)
+    adventureStartScene?: Adventure;
 
     @Column({
         type: DataType.TEXT,
@@ -24,19 +30,14 @@ export class Scene extends Model<Scene> {
         type: DataType.TEXT,
         field: 'description',
     })
-    get description(): string {
-        const value = this.getDataValue('description');
-        return value.replace(/\n/g, '<br>');
-    }
+    description?: string;
 
     @Column({
-        type: DataType.STRING(255),
         field: 'description_position',
     })
     descriptionPosition?: string;
 
     @Column({
-        type: DataType.INTEGER,
         field: 'start_scene_id',
     })
     startSceneId?: number;

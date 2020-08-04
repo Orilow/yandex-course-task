@@ -4,3 +4,4 @@
 out/
 .idea_modules/
 config/database.js
+.next/

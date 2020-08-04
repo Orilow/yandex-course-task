@@ -1,9 +1,8 @@
-import { Action } from '../models/action';
-import { Achievement } from '../models/achievement';
-import { Response } from 'express';
-import { Scene } from '../models/scene';
+import Achievement from 'models/achievement';
+import Action from 'models/action';
 import { adventuresList } from './adventures';
-import { ExtendedRequest } from '../extensions';
+import Scene from 'models/scene';
+import { Request, Response } from 'express';
 
 export interface PageData {
     meta?: {
@@ -19,8 +18,8 @@ interface ScenePageData extends PageData {
     scene: Scene;
 }
 
-export async function scene(req: ExtendedRequest, res: Response): Promise<void> {
-    const { meta, title, staticBasePath } = req.locals || {};
+export async function scene(req: Request, res: Response): Promise<void> {
+    const { meta, title, staticBasePath } = { meta: undefined, title: undefined, staticBasePath: undefined };
     const id = Number(req.query.id);
     if (!id) {
         return adventuresList(req, res);

@@ -1,4 +1,4 @@
-.adventure-box{
+.adventure-box {
     height: 200px;
     display: grid;
     grid-template-columns: 200px auto;
@@ -10,13 +10,13 @@
     margin-top: 25px;
 }
 
-.adventure-img-box{
+.adventure-img-box {
     width: 200px;
     height: 150px;
     padding-top: 13%;
 }
 
-.adventure-info{
+.adventure-info {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -27,12 +27,11 @@
     margin-bottom: 20px;
 }
 
-.adventure-description{
+.adventure-description {
     font-size: 18px;
     margin-bottom: 15px;
 }
 
-.adventure-hashtags
-{
+.adventure-hashtags {
     padding-top: 10px;
 }
